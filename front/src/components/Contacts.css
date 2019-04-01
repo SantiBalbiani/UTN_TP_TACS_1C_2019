@@ -1,0 +1,68 @@
+body{
+  box-sizing: border-box;
+  background: #e8cbc0; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #e8cbc0, #636fa4); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #e8cbc0, #636fa4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  height: 100vh;
+}
+h1{
+  margin: 1%;
+  text-align: center;
+}
+h2{
+  margin: 30px 1%;
+  border-top: solid 2px black;
+  padding: 20px;
+  text-align: center;
+}
+.prueba{
+  display:flex;
+  flex-direction: column;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+  justify-content: center;
+  flex:1;
+}
+.contactCard {
+  display:flex;
+  flex-direction: column;
+  width:20%;
+  margin: 1%;
+  padding-left: 2em; 
+  border: solid 0.20em;
+  border-radius: 0.6em;
+  background-color: rgba(255, 255, 255, 0.767);
+}
+
+.form{
+  display:flex;
+  flex-direction: column;
+  width: 200px;
+  height: 50%;
+  margin:auto;
+  align-items: center;
+}
+input {
+  flex-direction: row;
+  flex:1;
+  height: 30px !important;
+  width: 100%;
+  margin: 10px 0;
+  border-radius: 0.6em;
+}
+
+button {
+  background-color:#636fa4;
+  border: none;
+  width:100px;
+  padding: 15px 20px;
+  border-radius: 0.6em;
+  margin-top: 20px;
+  color:white;
+  font-size: 14px;
+  font-weight: bolder;
+  margin-bottom: 40px;
+}
