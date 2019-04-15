@@ -1,4 +1,4 @@
-package FindYourPlace.Entity;
+package FindYourPlace.entity;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
@@ -10,7 +10,7 @@ public class PlaceList {
     private User user;
     private java.util.List<Place> places;
 
-    private final AtomicLong counter = new AtomicLong();
+    static private final AtomicLong counter = new AtomicLong();
 
     public PlaceList(String name, User user) {
         this.id = counter.incrementAndGet();

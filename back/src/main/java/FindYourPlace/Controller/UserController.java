@@ -1,10 +1,10 @@
-package FindYourPlace.Controller;
+package FindYourPlace.controller;
 
-import FindYourPlace.Entity.PlaceList;
-import FindYourPlace.Entity.User;
+import FindYourPlace.entity.PlaceList;
+import FindYourPlace.entity.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/user")
@@ -12,12 +12,13 @@ public class UserController {
 
     @RequestMapping(value = "",method = RequestMethod.POST)
     public String createUser(@RequestBody User user) {
+
         return "Usuario creado con éxito";
     }
 
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
-    public String getUser(@PathVariable int userId) {
-        return "Usuario creado con éxito";
+    public User getUser(@PathVariable int userId) {
+        return new User("Usuario actual", "fakePassword");
     }
 
     @RequestMapping(value = "/place_list",method = RequestMethod.POST)

@@ -1,15 +1,13 @@
-package FindYourPlace.Controller;
+package FindYourPlace.controller;
 
-import FindYourPlace.Entity.Place;
-import FindYourPlace.Entity.User;
+import FindYourPlace.entity.Place;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class AdminController {
@@ -22,13 +20,21 @@ public class AdminController {
     }
 
     @RequestMapping("/place/{placeId}/interested")
-    public int interestedUsers(@PathVariable int placeId) {
-        return 3;
+    public HashMap<String, Integer> interestedUsers(@PathVariable int placeId) {
+        HashMap<String, Integer> response = new HashMap<>();
+
+        response.put("interestedUsers", 3);
+
+        return response;
     }
 
     @RequestMapping("/dashboard/place")
-    public int totalRegisteredPlaces() {
-        return 92384;
+    public HashMap<String, Integer> totalRegisteredPlaces() {
+        HashMap<String, Integer> response = new HashMap<>();
+
+        response.put("totalRegisteredPlaces", 12312);
+
+        return response;
     }
 
 }

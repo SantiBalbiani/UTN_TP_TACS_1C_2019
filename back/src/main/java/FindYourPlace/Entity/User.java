@@ -1,4 +1,6 @@
-package FindYourPlace.Entity;
+package FindYourPlace.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -7,11 +9,12 @@ public class User {
 
     private final long id;
     private String username;
+    @JsonIgnore
     private String password;
     private String role;
     private List<PlaceList> placeLists;
 
-    private final AtomicLong counter = new AtomicLong();
+    static private final AtomicLong counter = new AtomicLong();
 
     public User(String username, String password) {
         this.id = counter.incrementAndGet();

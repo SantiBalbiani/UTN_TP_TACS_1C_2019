@@ -1,12 +1,10 @@
-package FindYourPlace.Controller;
+package FindYourPlace.controller;
 
-import FindYourPlace.Entity.User;
+import FindYourPlace.entity.User;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class SecurityController {

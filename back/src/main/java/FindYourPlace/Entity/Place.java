@@ -1,4 +1,4 @@
-package FindYourPlace.Entity;
+package FindYourPlace.entity;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -15,7 +15,7 @@ public class Place {
     private String state;
     private String country;
 
-    private final AtomicLong counter = new AtomicLong();
+    static private final AtomicLong counter = new AtomicLong();
 
     public Place(String name) {
         this.id = counter.incrementAndGet();

@@ -1,6 +1,6 @@
-package FindYourPlace.Controller;
+package FindYourPlace.controller;
 
-import FindYourPlace.Entity.Place;
+import FindYourPlace.entity.Place;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
