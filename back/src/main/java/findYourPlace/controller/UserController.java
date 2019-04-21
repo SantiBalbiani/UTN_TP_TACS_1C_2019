@@ -15,14 +15,12 @@ public class UserController {
     //Creación de usuario
     @RequestMapping(value = "",method = RequestMethod.POST)
     public String createUser(@RequestBody User user) {
-
         return UserService.createUser(user);
      }
 
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public User getUser(@PathVariable int userId) {
-
         return UserService.getUser(userId);
     }
 
