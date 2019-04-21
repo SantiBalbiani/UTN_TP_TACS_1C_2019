@@ -1,6 +1,8 @@
 package findYourPlace.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -17,15 +19,20 @@ public class User {
 
     static private final AtomicLong counter = new AtomicLong();
 
-
+/*
     public User(String username, String password) {
         this.id = counter.incrementAndGet();
         this.username = username;
         this.password = password;
         this.role = "USER";
     }
-
-    public User(long id, String username, String role, List<PlaceList> placeLists){
+*/
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public User(
+            @JsonProperty("id") long id, 
+            @JsonProperty("username") String username, 
+            @JsonProperty("role") String role, 
+            @JsonProperty("placeLists") List<PlaceList> placeLists){
         this.id = id;
         this.username = username;
         this.role = role;
@@ -58,5 +65,42 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<PlaceList> getPlaceLists() {
+        return placeLists;
+    }
+
+    public void setPlaceLists(List<PlaceList> placeLists) {
+        this.placeLists = placeLists;
+    }
+
+    public boolean addPlaceToPlaceList(PlaceList placeList) {
+        this.placeLists.add(placeList);
+        return true;
+    }
+
+    public PlaceList findPlaceList(int placeListId) {
+        for (int x=0; x < this.placeLists.size(); x++) {
+            if(this.placeLists.get(x).getId() == placeListId) {
+                return this.placeLists.get(x);
+            }
+        }
+        return null;
+    }
+
+    public boolean removePlaceList(PlaceList placeList) {
+        this.placeLists.remove(placeList);
+        return true;
+    }
+
+    public boolean modifyPlaceList(PlaceList placeList, String placeListName) {
+        for (int x=0; x < this.placeLists.size(); x++) {
+            if (this.placeLists.get(x) == placeList) {
+                this.placeLists.get(x).setName(placeListName);
+                return true;
+            }
+        }
+        return false;
     }
 }
