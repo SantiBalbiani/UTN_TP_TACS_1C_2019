@@ -1,6 +1,8 @@
 package findYourPlace.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -25,7 +27,12 @@ public class User {
         this.role = "USER";
     }
 
-    public User(long id, String username, String role, List<PlaceList> placeLists){
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public User (
+            @JsonProperty("id") long id,
+            @JsonProperty("username") String username,
+            @JsonProperty ("role") String role,
+            @JsonProperty("placeLists") List<PlaceList> placeLists)    {
         this.id = id;
         this.username = username;
         this.role = role;
