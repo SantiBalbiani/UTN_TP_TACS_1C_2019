@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class User {
 
+
     private final long id;
     private String username;
     @JsonIgnore
@@ -16,11 +17,19 @@ public class User {
 
     static private final AtomicLong counter = new AtomicLong();
 
+
     public User(String username, String password) {
         this.id = counter.incrementAndGet();
         this.username = username;
         this.password = password;
         this.role = "USER";
+    }
+
+    public User(long id, String username, String role, List<PlaceList> placeLists){
+        this.id = id;
+        this.username = username;
+        this.role = role;
+        this.placeLists = placeLists;
     }
 
     public long getId() {

@@ -11,11 +11,13 @@ public class UserController {
 
     @RequestMapping(value = "",method = RequestMethod.POST)
     public String createUser(@RequestBody User user) {
+
         return UserService.createUser(user);
      }
 
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public User getUser(@PathVariable int userId) {
+
         return UserService.getUser(userId);
     }
 
