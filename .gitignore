@@ -13,3 +13,4 @@ buildNumber.properties
 
 .idea/
 back/findurplace_back.iml
+back/src/main/resources/application.properties
