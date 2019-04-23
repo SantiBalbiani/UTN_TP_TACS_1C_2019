@@ -4,6 +4,7 @@ import findYourPlace.connector.FourSquareConnector;
 import findYourPlace.entity.Place;
 import findYourPlace.utils.PlaceDeserializer;
 
+import findYourPlace.utils.PlacesResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,15 +47,16 @@ public class PlaceController {
     	
     	
     	RestTemplate restTemplate = new RestTemplate();
-  
-    	ResponseEntity<List<Place>> response = restTemplate.exchange(
+
+		// ToDo: habria que buscar si existe una forma mas "prolija" de hacerlo y reemplazar el PlacesResponse.
+    	ResponseEntity<PlacesResponse> response = restTemplate.exchange(
     			builder.toUriString(),
-    	  HttpMethod.GET,
-    	  null,
-    	  new ParameterizedTypeReference<List<Place>>(){});
+    	  		HttpMethod.GET,
+				null,
+    	  		new ParameterizedTypeReference<PlacesResponse>(){});
     	
-    	List<Place> places = response.getBody();
-    	
+    	List<Place> places = response.getBody().getPlaces();
+
     	return places;
   
     }
