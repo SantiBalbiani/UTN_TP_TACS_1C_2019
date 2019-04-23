@@ -120,4 +120,9 @@ public class Place {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    @Override
+    public String toString() {
+        return id + " " + name + " (" + address + ") ";
+    }
 }

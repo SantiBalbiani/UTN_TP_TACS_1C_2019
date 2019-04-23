@@ -77,4 +77,14 @@ public class PlaceList {
     public void setPlaces(java.util.List<Place> places) {
         this.places = places;
     }
+
+    @Override
+    public String toString() {
+        String description = "";
+        for (Place place: this.places) {
+            description += place.toString() + "\n";
+        }
+
+        return description;
+    }
 }

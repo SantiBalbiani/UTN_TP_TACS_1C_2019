@@ -8,13 +8,15 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import findYourPlace.telegram.TelegramBot;
 
+import javax.annotation.PostConstruct;
+
 @SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
     		
     	ApiContextInitializer.init();
-    	
+
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
             telegramBotsApi.registerBot(new TelegramBot());
@@ -24,4 +26,5 @@ public class Application {
     	
         SpringApplication.run(Application.class, args);
     }
+
 }

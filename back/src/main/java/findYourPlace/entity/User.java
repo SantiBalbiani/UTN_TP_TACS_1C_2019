@@ -89,6 +89,16 @@ public class User {
         return null;
     }
 
+    public PlaceList findPlaceListByName(String placeListName) {
+        for (int x=0; x < this.placeLists.size(); x++) {
+            if(this.placeLists.get(x).getName().equals(placeListName)) {
+                return this.placeLists.get(x);
+            }
+        }
+        return null;
+    }
+
+
     public boolean removePlaceList(PlaceList placeList) {
         this.placeLists.remove(placeList);
         return true;
