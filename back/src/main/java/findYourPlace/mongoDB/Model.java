@@ -1,5 +1,6 @@
 package findYourPlace.mongoDB;
 
+import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 
@@ -10,14 +11,19 @@ public class Model {
 
     private static Model model;
     private List<User> users;
+    private List<Place> places;
 
-
-    public static Model getModel(){
-        if(model == null){
+    public static Model getModel() {
+        if (model == null) {
             model = new Model();
-            model.setUsers(new ArrayList<User>());
         }
+
         return model;
+    }
+
+    private Model() {
+        this.users = new ArrayList<User>();
+        this.places = new ArrayList<Place>();
     }
 
     public List<User> getUsers() {
@@ -28,44 +34,40 @@ public class Model {
         this.users = users;
     }
 
-    public boolean addUser(User user){
-        try{
-            return this.users.add(user);
-        } catch (Exception e){
-            return false;
-        }
+    public boolean addUser(User user) {
+        return this.users.add(user);
     }
 
-    public User getUser(long userId){
-        for(User user:users){
-            if(user.getId()==userId)
+    public User getUser(long userId) {
+        for (User user : users) {
+            if (user.getId() == userId)
                 return user;
         }
         return null;
     }
 
-    public List<PlaceList> getUserPlaces(long userId){
-        for(User user:users){
-            if(user.getId()==userId)
+    public List<PlaceList> getUserPlaces(long userId) {
+        for (User user : users) {
+            if (user.getId() == userId)
                 return user.getPlaceLists();
         }
         return null;
     }
 
-    public List<PlaceList> setUserPlaces(long userId){
-        for(User user:users){
-            if(user.getId()==userId)
+    public List<PlaceList> setUserPlaces(long userId) {
+        for (User user : users) {
+            if (user.getId() == userId)
                 return user.getPlaceLists();
         }
         return null;
     }
 
-    public boolean addUserPlaces(int userId, PlaceList placeList){
-        for (int x=0; x < users.size(); x++) {
+    public boolean addUserPlaces(int userId, PlaceList placeList) {
+        for (int x = 0; x < users.size(); x++) {
             if (users.get(x).getId() == userId) {
-                try{
+                try {
                     return this.users.get(x).addPlaceToPlaceList(placeList);
-                } catch (Exception e){
+                } catch (Exception e) {
                     return false;
                 }
             }
@@ -74,11 +76,11 @@ public class Model {
     }
 
     public boolean removeUserPlaceList(int userId, int placeListId) {
-        for (int x=0; x < users.size(); x++) {
+        for (int x = 0; x < users.size(); x++) {
             if (users.get(x).getId() == userId) {
-                try{
+                try {
                     return this.users.get(x).removePlaceList(this.users.get(x).findPlaceList(placeListId));
-                } catch (Exception e){
+                } catch (Exception e) {
                     return false;
                 }
             }
@@ -87,15 +89,33 @@ public class Model {
     }
 
     public boolean modifyUserPlaceList(int userId, int placeListId, String placeListName) {
-        for (int x=0; x < users.size(); x++) {
+        for (int x = 0; x < users.size(); x++) {
             if (users.get(x).getId() == userId) {
-                try{
+                try {
                     return this.users.get(x).modifyPlaceList(this.users.get(x).findPlaceList(placeListId), placeListName);
-                } catch (Exception e){
+                } catch (Exception e) {
                     return false;
                 }
             }
         }
+
         return false;
+    }
+
+    public void savePlace(Place place) {
+        places.add(place);
+    }
+
+    public List<Place> getPlaces() {
+        return places;
+    }
+
+    public Place getPlace(long id) {
+        for (Place place: this.places) {
+            if(place.getId() == id) {
+                return place;
+            }
+        }
+        return null;
     }
 }

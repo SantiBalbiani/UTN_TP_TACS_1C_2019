@@ -12,14 +12,6 @@ public class SecurityController {
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public String login(@RequestBody User user) {
-            /*  Verificar porque no puedo compilar  
-        String pass_to_verify = user.get_password();
-        boolean pass_ok = Encrypt.checkPsw(pass_to_verify, **ACA RECUPERAR PASS ENCRIPTADA** )
-        if pass_ok{
-            return "Contraseña incorrecta";
-        }else{
-            return "Logeado con éxito";
-        } */
         return "Logeado con éxito";
     }
 

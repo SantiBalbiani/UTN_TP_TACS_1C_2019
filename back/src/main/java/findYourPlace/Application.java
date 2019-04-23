@@ -8,8 +8,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import findYourPlace.telegram.TelegramBot;
 
-import javax.annotation.PostConstruct;
-
 @SpringBootApplication
 public class Application {
 

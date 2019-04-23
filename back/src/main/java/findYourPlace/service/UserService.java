@@ -1,38 +1,25 @@
 package findYourPlace.service;
 
+import findYourPlace.entity.Place;
 import findYourPlace.entity.User;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.mongoDB.Model;
 
 import java.util.List;
 
-public class UserService {
+public interface UserService {
 
-    private static Model model = Model.getModel();
+    String createUser(User user);
 
-    public static String createUser(User user) {
-        //TODO: modificar esto por la creación del usuario en mongo
-        return model.addUser(user)?"Usuario creado con éxito":"Error creando usuario";
-    }
+    User getUser(long userId);
 
-    public static User getUser(long userId) {
-        //TODO: modificar esto para que el usuario se recupere de la base en mongo
-        return model.getUser(userId);
-    }
+    List<PlaceList> getUserPlaces(long userId);
 
-    public static List<PlaceList> getUserPlaces(long userId) {
-        return model.getUserPlaces(userId);
-    }
+    String createUserPlaces(int userId, PlaceList placeList);
 
-    public static String createUserPlaces(int userId, PlaceList placeList) {
-        return model.addUserPlaces(userId, placeList)?"Lista creada con éxito":"Error creando la lista";
-    }
+    String deleteUserPlaces(int userId, int placeListId);
 
-    public static String deleteUserPlaces(int userId, int placeListId) {
-        return model.removeUserPlaceList(userId, placeListId)?"Lista eliminada con éxito":"Error eliminando la lista";
-    }
+    String modifyUserPlaces(int userId, int placeListId, String placeListName);
 
-    public static String modifyUserPlaces(int userId, int placeListId, String placeListName) {
-        return model.modifyUserPlaceList(userId, placeListId, placeListName)?"Lista modificada con éxito":"Error modificando la lista";
-    }
+    Place getPlace(long id);
 }

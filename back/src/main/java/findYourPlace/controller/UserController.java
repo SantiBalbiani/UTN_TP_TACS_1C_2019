@@ -2,52 +2,56 @@ package findYourPlace.controller;
 
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
-import findYourPlace.service.UserService;
 
 import java.util.List;
 
+import findYourPlace.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
+    @Autowired
+    private UserService userService;
+
     //Creación de usuario
     @RequestMapping(value = "",method = RequestMethod.POST)
     public String createUser(@RequestBody User user) {
-        return UserService.createUser(user);
+        return userService.createUser(user);
      }
 
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public User getUser(@PathVariable int userId) {
-        return UserService.getUser(userId);
+        return userService.getUser(userId);
     }
 
     //Visualizar lista de listas de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.GET)
     public List<PlaceList> getUserPlaces(@PathVariable int userId) {
 
-        return UserService.getUserPlaces(userId);
+        return userService.getUserPlaces(userId);
     }
 
     //Agregar una nueva lista de lugares al usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.POST)
     public String setUserPlaces(@PathVariable int userId, @RequestBody PlaceList placeList) {
 
-        return UserService.createUserPlaces(userId, placeList);
+        return userService.createUserPlaces(userId, placeList);
     }
 
     //Eliminar una lista de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.DELETE)
     public String deletePlaceList(@PathVariable int userId, @PathVariable int placeListId) {
-        return UserService.deleteUserPlaces(userId, placeListId);
+        return userService.deleteUserPlaces(userId, placeListId);
     }
 
     //Cambiar nombre de lista lugares del usuario
     @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.PATCH)
     public String modifyPlaceList(@PathVariable int userId, @PathVariable int placeListId, @RequestBody String placeListName) {
-        return UserService.modifyUserPlaces(userId, placeListId, placeListName);
+        return userService.modifyUserPlaces(userId, placeListId, placeListName);
     }
 
 /*

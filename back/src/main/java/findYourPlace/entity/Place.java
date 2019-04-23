@@ -147,6 +147,6 @@ public class Place {
 
     @Override
     public String toString() {
-        return id + " " + name + " (" + address + ") ";
+        return id + " - " + placeId + " - " + name + " (" + address + ") ";
     }
 }

@@ -1,15 +1,33 @@
 package findYourPlace.telegram;
 
+import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
+import findYourPlace.service.FourSquareService;
 import findYourPlace.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.List;
+
 public class TelegramBot extends TelegramLongPollingBot {
+
+    @Value("${telegram.username}")
+    private String botUsername;
+
+    @Value("${foursquare.token}")
+    private String token;
+
+    @Autowired
+    private FourSquareService fourSquareService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -51,8 +69,15 @@ public class TelegramBot extends TelegramLongPollingBot {
             return "Por favor ingrese: {descripción}";
         }
 
-        //TODO search
-        return "";
+        String description = parameters[1];
+        List<Place> places = fourSquareService.searchPlaces(description);
+
+        String responseText = "";
+        for (Place place: places) {
+            responseText += place.toString() + "\n";
+        }
+
+        return responseText;
     }
 
     private String placesList(String[] parameters) {
@@ -63,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         long idUser = Long.parseLong(parameters[1]);
         String placeListName = parameters[2];
 
-        User user = UserService.getUser(idUser);
+        User user = userService.getUser(idUser);
 
         if(user == null) {
             return "{idUsuario} inválido";
@@ -87,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String placeListName = parameters[2];
         long idLugar = Long.parseLong(parameters[3]);
 
-        User user = UserService.getUser(idUser);
+        User user = userService.getUser(idUser);
 
         if(user == null) {
             return "{idUsuario} inválido";
@@ -99,19 +124,25 @@ public class TelegramBot extends TelegramLongPollingBot {
             return "{nombreLista} inválido";
         }
 
-        //TODO: Buscar lugar y agregarlo a la lista
-        return "";
+        Place place = userService.getPlace(idLugar);
+
+        if(placeList == null) {
+            return "{idLugar} inválido";
+        }
+
+        placeList.addPlace(place);
+
+        return "Lugar agregado con éxito";
     }
 
     @Override
     public String getBotUsername() {
-        return "tptacs_bot";
+        return botUsername;
     }
 
     @Override
     public String getBotToken() {
-        return "898507625:AAEY6Ihm89CIlCgrznSvut5R-10jQugcj1w";
+        return token;
     }
-
 
 }
