@@ -1,4 +1,4 @@
-package findYourPlace.Telegram;
+package findYourPlace.telegram;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

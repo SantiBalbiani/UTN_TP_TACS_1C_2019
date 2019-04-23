@@ -6,7 +6,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import findYourPlace.Telegram.TelegramBot;
+import findYourPlace.telegram.TelegramBot;
 
 @SpringBootApplication
 public class Application {

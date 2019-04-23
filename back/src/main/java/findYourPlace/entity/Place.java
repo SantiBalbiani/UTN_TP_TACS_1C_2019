@@ -2,6 +2,11 @@ package findYourPlace.entity;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import findYourPlace.utils.PlaceDeserializer;
+
+@JsonDeserialize(using = PlaceDeserializer.class)
 public class Place {
 
     private final long id;
@@ -19,6 +24,11 @@ public class Place {
 
     public Place(String name) {
         this.id = counter.incrementAndGet();
+        this.name = name;
+    }
+    
+    public Place(String name, long id) {
+        this.id = id;
         this.name = name;
     }
 
