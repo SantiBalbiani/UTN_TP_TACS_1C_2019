@@ -1,5 +1,6 @@
 package findYourPlace.entity;
 
+import findYourPlace.utils.Encrypt;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,7 +57,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = Encrypt.get_SHA_256_SecurePassword(password, salt);
     }
 
     public String getRole() {
