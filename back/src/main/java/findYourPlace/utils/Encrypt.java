@@ -1,12 +1,14 @@
+package findYourPlace.utils;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
  
 public class Encrypt {
     
-    public static final String salt = getSalt();
-    
-    private static String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt)
+    public static final byte[] salt = getSalt();
+
+    public static String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt)
     {
         String generatedPassword = null;
         try {
@@ -27,16 +29,21 @@ public class Encrypt {
         return generatedPassword;
     }
     
-    private static boolean checkPsw(String pass, String securedPass, byte[] salt) throws NoSuchAlgorithmException{
+    public static boolean checkPsw(String pass, String securedPass, byte[] salt) throws NoSuchAlgorithmException{
       
         return ((get_SHA_256_SecurePassword(pass, salt)).equals(securedPass));
     }
-     
-    private static byte[] getSalt() throws NoSuchAlgorithmException
+
+    public static byte[] getSalt() // throws NoSuchAlgorithmException
     {
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        SecureRandom sr = null;
         byte[] salt = new byte[16];
-        sr.nextBytes(salt);
+        try {
+            sr = SecureRandom.getInstance("SHA1PRNG");
+            sr.nextBytes(salt);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         return salt;
     }
 }
