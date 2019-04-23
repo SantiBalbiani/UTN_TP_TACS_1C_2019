@@ -10,6 +10,7 @@ import findYourPlace.utils.PlaceDeserializer;
 public class Place {
 
     private final long id;
+    private String placeId;
     private String name;
     private String address;
     private float  latitude;
@@ -45,8 +46,31 @@ public class Place {
         this.country = country;
     }
 
+    public Place(String placeId, String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
+        this.id = counter.incrementAndGet();
+        this.placeId = placeId;
+        this.name = name;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.postalCode = postalCode;
+        this.cc = cc;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+    }
+
+
     public long getId() {
         return id;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public String getName() {
