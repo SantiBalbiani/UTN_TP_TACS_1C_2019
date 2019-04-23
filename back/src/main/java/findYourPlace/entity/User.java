@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static findYourPlace.utils.Encrypt.salt;
+
 public class User {
 
 
