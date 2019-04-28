@@ -57,7 +57,7 @@
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-data-mongodb</artifactId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
       <version>LATEST</version>
     </dependency>
 
