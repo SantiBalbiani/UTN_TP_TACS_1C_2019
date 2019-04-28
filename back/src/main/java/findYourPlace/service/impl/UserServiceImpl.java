@@ -4,26 +4,32 @@ import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 import findYourPlace.mongoDB.Model;
+import findYourPlace.mongoDB.UserRepository;
 import findYourPlace.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private static Model model = Model.getModel();
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public String createUser(User user) {
-        //TODO: modificar esto por la creación del usuario en mongo
-        return model.addUser(user) ? "Usuario creado con éxito" : "Error creando usuario";
+        userRepository.save(user);
+        return  "Usuario creado con éxito";
     }
 
     @Override
     public User getUser(long userId) {
-        //TODO: modificar esto para que el usuario se recupere de la base en mongo
-        return model.getUser(userId);
+        Optional<User> user = userRepository.findById(userId);
+        return user.get();
     }
 
     @Override
