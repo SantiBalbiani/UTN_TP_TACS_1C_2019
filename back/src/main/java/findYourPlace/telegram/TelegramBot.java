@@ -20,7 +20,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${telegram.username}")
     private String botUsername;
 
-    @Value("${foursquare.client-secret}")
+    @Value("${telegram.token}")
     private String token;
 
     @Autowired
