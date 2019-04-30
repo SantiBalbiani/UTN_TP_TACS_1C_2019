@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -19,7 +20,6 @@ public class User {
 
     @Id
     private String id;
-    @Indexed(unique = true)
     private String username;
     @JsonIgnore
     private String password;
@@ -31,11 +31,10 @@ public class User {
     @PersistenceConstructor
     public User(
             @JsonProperty("username") String username,
-            @JsonProperty("role") String role,
-            @JsonProperty("placeLists") List<PlaceList> placeLists){
+            @JsonProperty("role") String role){
         this.username = username;
         this.role = role;
-        this.placeLists = placeLists;
+        this.placeLists = new ArrayList<PlaceList>();
     }
 
     public String getId() {
