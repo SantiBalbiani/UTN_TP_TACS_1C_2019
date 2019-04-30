@@ -1,11 +1,11 @@
 package findYourPlace.entity;
 
 import findYourPlace.utils.Encrypt;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
@@ -19,6 +19,7 @@ public class User {
 
     @Id
     private String id;
+    @Indexed(unique = true)
     private String username;
     @JsonIgnore
     private String password;
