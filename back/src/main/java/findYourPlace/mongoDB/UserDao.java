@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import findYourPlace.entity.User;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, Long> {
+public interface UserDao extends MongoRepository<User, Long> {
 }

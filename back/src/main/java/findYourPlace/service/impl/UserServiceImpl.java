@@ -4,11 +4,10 @@ import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 import findYourPlace.mongoDB.Model;
-import findYourPlace.mongoDB.UserRepository;
+import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +17,11 @@ public class UserServiceImpl implements UserService {
 
     private static Model model = Model.getModel();
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userRepository;
 
     @Override
-    public String createUser(User user) {
-        userRepository.save(user);
-        return  "Usuario creado con éxito";
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
