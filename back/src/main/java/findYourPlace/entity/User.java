@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
@@ -17,7 +18,7 @@ import static findYourPlace.utils.Encrypt.salt;
 public class User {
 
     @Id
-    private final long id;
+    private String id;
     private String username;
     @JsonIgnore
     private String password;
@@ -26,27 +27,17 @@ public class User {
 
     static private final AtomicLong counter = new AtomicLong();
 
-/*
-    public User(String username, String password) {
-        this.id = counter.incrementAndGet();
-        this.username = username;
-        this.password = password;
-        this.role = "USER";
-    }
-*/
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    @PersistenceConstructor
     public User(
-            @JsonProperty("id") long id, 
-            @JsonProperty("username") String username, 
-            @JsonProperty("role") String role, 
+            @JsonProperty("username") String username,
+            @JsonProperty("role") String role,
             @JsonProperty("placeLists") List<PlaceList> placeLists){
-        this.id = id;
         this.username = username;
         this.role = role;
         this.placeLists = placeLists;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 

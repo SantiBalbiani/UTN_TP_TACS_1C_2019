@@ -11,15 +11,15 @@ public interface UserService {
 
     User createUser(User user);
 
-    User getUser(long userId);
+    User getUser(String userId);
 
-    List<PlaceList> getUserPlaces(long userId);
+    List<PlaceList> getUserPlaces(String userId);
 
-    String createUserPlaces(int userId, PlaceList placeList);
+    String createUserPlaces(String userId, PlaceList placeList);
 
-    String deleteUserPlaces(int userId, int placeListId);
+    String deleteUserPlaces(String userId, int placeListId);
 
-    String modifyUserPlaces(int userId, int placeListId, String placeListName);
+    String modifyUserPlaces(String userId, int placeListId, String placeListName);
 
     Place getPlace(long id);
 }

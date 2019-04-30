@@ -24,14 +24,12 @@ public class UserController {
     @RequestMapping(value = "",method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody User user) {
         ResponseEntity response;
-        JSONObject jsonObject = new JSONObject();
-        HttpStatus status = getUser(user.getId()).getStatusCode();
-        if(status!=HttpStatus.OK){
+        try {
             userService.createUser(user);
-            jsonObject.put("description","Usuario creado");
-            response = new ResponseEntity(jsonObject.toString(),HttpStatus.OK);
-        } else {
-            jsonObject.put("description","El usuario ya existe");
+            response = new ResponseEntity(user,HttpStatus.OK);
+        } catch (Exception e){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("errorDescription",e.getMessage());
             response = new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
         }
         return response;
@@ -39,7 +37,7 @@ public class UserController {
 
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
-    public ResponseEntity getUser(@PathVariable long userId) {
+    public ResponseEntity getUser(@PathVariable String userId) {
         ResponseEntity response;
         try {
             response = new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
@@ -53,27 +51,27 @@ public class UserController {
 
     //Visualizar lista de listas de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.GET)
-    public List<PlaceList> getUserPlaces(@PathVariable int userId) {
+    public List<PlaceList> getUserPlaces(@PathVariable String userId) {
 
         return userService.getUserPlaces(userId);
     }
 
     //Agregar una nueva lista de lugares al usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.POST)
-    public String setUserPlaces(@PathVariable int userId, @RequestBody PlaceList placeList) {
+    public String setUserPlaces(@PathVariable String userId, @RequestBody PlaceList placeList) {
 
         return userService.createUserPlaces(userId, placeList);
     }
 
     //Eliminar una lista de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.DELETE)
-    public String deletePlaceList(@PathVariable int userId, @PathVariable int placeListId) {
+    public String deletePlaceList(@PathVariable String userId, @PathVariable int placeListId) {
         return userService.deleteUserPlaces(userId, placeListId);
     }
 
     //Cambiar nombre de lista lugares del usuario
     @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.PATCH)
-    public String modifyPlaceList(@PathVariable int userId, @PathVariable int placeListId, @RequestBody String placeListName) {
+    public String modifyPlaceList(@PathVariable String userId, @PathVariable int placeListId, @RequestBody String placeListName) {
         return userService.modifyUserPlaces(userId, placeListId, placeListName);
     }
 

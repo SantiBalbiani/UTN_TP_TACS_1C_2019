@@ -85,7 +85,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             return "Por favor ingrese: {idUsuario} {nombreLista}";
         }
 
-        long idUser = Long.parseLong(parameters[1]);
+        String idUser = parameters[1];
         String placeListName = parameters[2];
 
         User user = userService.getUser(idUser);
@@ -108,7 +108,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             return "Por favor ingrese: {idUsuario} {nombreLista} {idLugar}";
         }
 
-        long idUser = Long.parseLong(parameters[1]);
+        String idUser = parameters[1];
         String placeListName = parameters[2];
         long idLugar = Long.parseLong(parameters[3]);
 

@@ -38,33 +38,33 @@ public class Model {
         return this.users.add(user);
     }
 
-    public User getUser(long userId) {
+    public User getUser(String userId) {
         for (User user : users) {
-            if (user.getId() == userId)
+            if (user.getId().equals(userId))
                 return user;
         }
         return null;
     }
 
-    public List<PlaceList> getUserPlaces(long userId) {
+    public List<PlaceList> getUserPlaces(String userId) {
         for (User user : users) {
-            if (user.getId() == userId)
+            if (user.getId().equals(userId))
                 return user.getPlaceLists();
         }
         return null;
     }
 
-    public List<PlaceList> setUserPlaces(long userId) {
+    public List<PlaceList> setUserPlaces(String userId) {
         for (User user : users) {
-            if (user.getId() == userId)
+            if (user.getId().equals(userId))
                 return user.getPlaceLists();
         }
         return null;
     }
 
-    public boolean addUserPlaces(int userId, PlaceList placeList) {
+    public boolean addUserPlaces(String userId, PlaceList placeList) {
         for (int x = 0; x < users.size(); x++) {
-            if (users.get(x).getId() == userId) {
+            if (users.get(x).getId().equals(userId)) {
                 try {
                     return this.users.get(x).addPlaceToPlaceList(placeList);
                 } catch (Exception e) {
@@ -75,9 +75,9 @@ public class Model {
         return false;
     }
 
-    public boolean removeUserPlaceList(int userId, int placeListId) {
+    public boolean removeUserPlaceList(String userId, int placeListId) {
         for (int x = 0; x < users.size(); x++) {
-            if (users.get(x).getId() == userId) {
+            if (users.get(x).getId().equals(userId)) {
                 try {
                     return this.users.get(x).removePlaceList(this.users.get(x).findPlaceList(placeListId));
                 } catch (Exception e) {
@@ -88,9 +88,9 @@ public class Model {
         return false;
     }
 
-    public boolean modifyUserPlaceList(int userId, int placeListId, String placeListName) {
+    public boolean modifyUserPlaceList(String userId, int placeListId, String placeListName) {
         for (int x = 0; x < users.size(); x++) {
-            if (users.get(x).getId() == userId) {
+            if (users.get(x).getId().equals(userId)) {
                 try {
                     return this.users.get(x).modifyPlaceList(this.users.get(x).findPlaceList(placeListId), placeListName);
                 } catch (Exception e) {

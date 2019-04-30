@@ -17,36 +17,36 @@ public class UserServiceImpl implements UserService {
 
     private static Model model = Model.getModel();
     @Autowired
-    private UserDao userRepository;
+    private UserDao userDao;
 
     @Override
     public User createUser(User user) {
-        return userRepository.save(user);
+        return userDao.save(user);
     }
 
     @Override
-    public User getUser(long userId) {
-        Optional<User> user = userRepository.findById(userId);
+    public User getUser(String userId) {
+        Optional<User> user = userDao.findById(userId);
         return user.get();
     }
 
     @Override
-    public List<PlaceList> getUserPlaces(long userId) {
+    public List<PlaceList> getUserPlaces(String userId) {
         return model.getUserPlaces(userId);
     }
 
     @Override
-    public String createUserPlaces(int userId, PlaceList placeList) {
+    public String createUserPlaces(String userId, PlaceList placeList) {
         return model.addUserPlaces(userId, placeList) ? "Lista creada con éxito" : "Error creando la lista";
     }
 
     @Override
-    public String deleteUserPlaces(int userId, int placeListId) {
+    public String deleteUserPlaces(String userId, int placeListId) {
         return model.removeUserPlaceList(userId, placeListId) ? "Lista eliminada con éxito" : "Error eliminando la lista";
     }
 
     @Override
-    public String modifyUserPlaces(int userId, int placeListId, String placeListName) {
+    public String modifyUserPlaces(String userId, int placeListId, String placeListName) {
         return model.modifyUserPlaceList(userId, placeListId, placeListName) ? "Lista modificada con éxito" : "Error modificando la lista";
     }
 
