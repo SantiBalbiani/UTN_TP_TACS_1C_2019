@@ -1,12 +1,16 @@
 package findYourPlace.controller;
 
+import com.mongodb.util.JSON;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 
 import java.util.List;
 
 import findYourPlace.service.UserService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,16 +22,33 @@ public class UserController {
 
     //Creación de usuario
     @RequestMapping(value = "",method = RequestMethod.POST)
-    @ResponseBody
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public ResponseEntity createUser(@RequestBody User user) {
+        ResponseEntity response;
+        JSONObject jsonObject = new JSONObject();
+        HttpStatus status = getUser(user.getId()).getStatusCode();
+        if(status!=HttpStatus.OK){
+            userService.createUser(user);
+            jsonObject.put("description","Usuario creado");
+            response = new ResponseEntity(jsonObject.toString(),HttpStatus.OK);
+        } else {
+            jsonObject.put("description","El usuario ya existe");
+            response = new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+        }
+        return response;
      }
 
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
-    @ResponseBody
-    public User getUser(@PathVariable int userId) {
-        return userService.getUser(userId);
+    public ResponseEntity getUser(@PathVariable long userId) {
+        ResponseEntity response;
+        try {
+            response = new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
+        } catch (Exception e){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("description","El usuario no existe");
+            response = new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+        }
+        return response;
     }
 
     //Visualizar lista de listas de lugares del usuario
