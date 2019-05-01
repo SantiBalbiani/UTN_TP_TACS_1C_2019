@@ -32,12 +32,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<PlaceList> getUserPlaces(String userId) {
-        return model.getUserPlaces(userId);
+        return getUser(userId).getPlaceLists();
     }
 
     @Override
-    public String createUserPlaces(String userId, PlaceList placeList) {
-        return model.addUserPlaces(userId, placeList) ? "Lista creada con éxito" : "Error creando la lista";
+    public User createUserPlaces(String userId, PlaceList placeList) throws Exception {
+        User user = getUser(userId);
+        PlaceList existingPlaceList = user.findPlaceListByName(placeList.getName());
+        if(existingPlaceList==null) {
+            user.addPlaceToPlaceList(placeList);
+            userDao.save(user);
+            return user;
+        } else {
+            throw new Exception("El usuario "+user.getUsername()+" ya tiene una lista con el nombre "+placeList.getName());
+        }
     }
 
     @Override

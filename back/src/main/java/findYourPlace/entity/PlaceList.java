@@ -6,34 +6,25 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 public class PlaceList {
 
-    private final long id;
+    //private Long id;
     private String name;
-    private User user;
     private List<Place> places;
 
-    static private final AtomicLong counter = new AtomicLong();
-/*
-    public PlaceList(String name, User user) {
-        this.id = counter.incrementAndGet();
-        this.name = name;
-        this.user = user;
-        this.places = new ArrayList<Place>();
-    }
-*/
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlaceList(@JsonProperty("name") String name) {
-        this.id = counter.incrementAndGet();
         this.name = name;
-        this.user = null;
-        this.places = new ArrayList<Place>(); 
+        this.places = new ArrayList<Place>();
     }
 
-    public long getId() {
-        return id;
+    /*public String getId() {
+        return String.valueOf(id);
     }
+    */
 
     public String getName() {
         return name;
@@ -41,14 +32,6 @@ public class PlaceList {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public java.util.List<Place> getPlaces() {

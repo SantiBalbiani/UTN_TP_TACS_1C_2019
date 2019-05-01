@@ -20,6 +20,7 @@ public class User {
 
     @Id
     private String id;
+    @Indexed(unique = true)
     private String username;
     @JsonIgnore
     private String password;
@@ -79,17 +80,12 @@ public class User {
     }
 
     public PlaceList findPlaceList(int placeListId) {
-        for (int x=0; x < this.placeLists.size(); x++) {
-            if(this.placeLists.get(x).getId() == placeListId) {
-                return this.placeLists.get(x);
-            }
-        }
-        return null;
+        return this.placeLists.get(placeListId);
     }
 
     public PlaceList findPlaceListByName(String placeListName) {
         for (int x=0; x < this.placeLists.size(); x++) {
-            if(this.placeLists.get(x).getName().equals(placeListName)) {
+            if(placeListName.equals(this.placeLists.get(x).getName())) {
                 return this.placeLists.get(x);
             }
         }

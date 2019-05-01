@@ -25,11 +25,13 @@ public class UserController {
     public ResponseEntity createUser(@RequestBody User user) {
         try {
             userService.createUser(user);
-            return new ResponseEntity(user,HttpStatus.OK);
+            return new ResponseEntity(user, HttpStatus.OK);
+        } catch (org.springframework.dao.DuplicateKeyException e){
+            return new ResponseEntity(new JSONObject().put("errorDescription",
+                    "Ya existe un usuario con username "+user.getUsername()).toString(),HttpStatus.CONFLICT);
         } catch (Exception e){
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("errorDescription",e.getMessage());
-            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+            return new ResponseEntity(new JSONObject().put("errorDescription",
+                    e.getMessage()).toString(),HttpStatus.CONFLICT);
         }
      }
 
@@ -48,15 +50,20 @@ public class UserController {
     //Visualizar lista de listas de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.GET)
     public List<PlaceList> getUserPlaces(@PathVariable String userId) {
-
         return userService.getUserPlaces(userId);
     }
 
     //Agregar una nueva lista de lugares al usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.POST)
-    public String setUserPlaces(@PathVariable String userId, @RequestBody PlaceList placeList) {
+    public ResponseEntity createUserPlaces(@PathVariable String userId, @RequestBody PlaceList placeList) {
+        try {
+            return new ResponseEntity(userService.createUserPlaces(userId, placeList), HttpStatus.OK);
+        } catch (Exception e){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("description",e.getMessage());
+            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+        }
 
-        return userService.createUserPlaces(userId, placeList);
     }
 
     //Eliminar una lista de lugares del usuario
