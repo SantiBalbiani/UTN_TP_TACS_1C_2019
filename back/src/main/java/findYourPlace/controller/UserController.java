@@ -23,30 +23,26 @@ public class UserController {
     //Creación de usuario
     @RequestMapping(value = "",method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody User user) {
-        ResponseEntity response;
         try {
             userService.createUser(user);
-            response = new ResponseEntity(user,HttpStatus.OK);
+            return new ResponseEntity(user,HttpStatus.OK);
         } catch (Exception e){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("errorDescription",e.getMessage());
-            response = new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
         }
-        return response;
      }
 
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public ResponseEntity getUser(@PathVariable String userId) {
-        ResponseEntity response;
         try {
-            response = new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
+            return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
         } catch (Exception e){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("description","El usuario no existe");
-            response = new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
         }
-        return response;
     }
 
     //Visualizar lista de listas de lugares del usuario
