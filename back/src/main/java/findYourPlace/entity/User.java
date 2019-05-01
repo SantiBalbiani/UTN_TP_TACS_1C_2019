@@ -92,6 +92,11 @@ public class User {
         return null;
     }
 
+    public boolean removePlaceList(int placeListId) {
+        PlaceList placeList = findPlaceList(placeListId);
+        this.placeLists.remove(placeList);
+        return true;
+    }
 
     public boolean removePlaceList(PlaceList placeList) {
         this.placeLists.remove(placeList);

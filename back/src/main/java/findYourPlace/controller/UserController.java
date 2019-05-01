@@ -68,8 +68,14 @@ public class UserController {
 
     //Eliminar una lista de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.DELETE)
-    public String deletePlaceList(@PathVariable String userId, @PathVariable int placeListId) {
-        return userService.deleteUserPlaces(userId, placeListId);
+    public ResponseEntity deletePlaceList(@PathVariable String userId, @PathVariable int placeListId) {
+        try {
+            return new ResponseEntity(userService.deleteUserPlaces(userId, placeListId), HttpStatus.OK);
+        } catch (Exception e){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("description",e.getMessage());
+            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+        }
     }
 
     //Cambiar nombre de lista lugares del usuario

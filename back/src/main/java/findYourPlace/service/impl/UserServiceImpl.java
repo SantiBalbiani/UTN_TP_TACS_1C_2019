@@ -49,8 +49,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleteUserPlaces(String userId, int placeListId) {
-        return model.removeUserPlaceList(userId, placeListId) ? "Lista eliminada con éxito" : "Error eliminando la lista";
+    public User deleteUserPlaces(String userId, int placeListId) {
+        User user = getUser(userId);
+        user.removePlaceList(placeListId);
+        userDao.save(user);
+        return user;
     }
 
     @Override

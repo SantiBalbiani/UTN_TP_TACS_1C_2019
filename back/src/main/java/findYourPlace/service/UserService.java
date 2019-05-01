@@ -17,7 +17,7 @@ public interface UserService {
 
     User createUserPlaces(String userId, PlaceList placeList) throws Exception;
 
-    String deleteUserPlaces(String userId, int placeListId);
+    User deleteUserPlaces(String userId, int placeListId);
 
     String modifyUserPlaces(String userId, int placeListId, String placeListName);
 
