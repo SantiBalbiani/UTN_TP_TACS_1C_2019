@@ -37,7 +37,7 @@ public class UserController {
         try {
             return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
         } catch (java.util.NoSuchElementException e){
-            return new ResponseEntity(new JSONObject().put("description","El usuario no existe").toString(),
+            return new ResponseEntity(new JSONObject().put("errorDescription","El usuario no existe").toString(),
                     HttpStatus.NOT_FOUND);
         }
     }
