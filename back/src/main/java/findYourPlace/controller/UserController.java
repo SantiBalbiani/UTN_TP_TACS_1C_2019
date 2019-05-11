@@ -66,8 +66,7 @@ public class UserController {
         try {
             return new ResponseEntity(userService.createUserPlaces(userId, placeList), HttpStatus.OK);
         } catch (DuplicateKeyException e){
-            return new ResponseEntity(new JSONObject().put("errorDescription",
-                    e.getMessage()),HttpStatus.CONFLICT);
+            return new ResponseEntity(HttpStatus.CONFLICT);
         }
     }
 
@@ -76,9 +75,8 @@ public class UserController {
     public ResponseEntity deletePlaceList(@PathVariable String userId, @PathVariable int placeListId) {
         try {
             return new ResponseEntity(userService.deleteUserPlaces(userId, placeListId), HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity(new JSONObject().put("errorDescription",
-                    e.getMessage()),HttpStatus.CONFLICT);
+        } catch (NoSuchElementException e){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 

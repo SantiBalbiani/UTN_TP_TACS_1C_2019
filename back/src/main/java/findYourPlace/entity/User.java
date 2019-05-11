@@ -8,9 +8,9 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static findYourPlace.utils.Encrypt.salt;
@@ -79,8 +79,12 @@ public class User {
         return true;
     }
 
-    public PlaceList findPlaceList(int placeListId) {
-        return this.placeLists.get(placeListId);
+    public PlaceList findPlaceList(int placeListId) throws NoSuchElementException {
+        try {
+            return this.placeLists.get(placeListId);
+        } catch (Exception e){
+            throw new NoSuchElementException();
+        }
     }
 
     public PlaceList findPlaceListByName(String placeListName) {
@@ -92,7 +96,7 @@ public class User {
         return null;
     }
 
-    public boolean removePlaceList(int placeListId) {
+    public boolean removePlaceList(int placeListId) throws NoSuchElementException {
         PlaceList placeList = findPlaceList(placeListId);
         this.placeLists.remove(placeList);
         return true;

@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User deleteUserPlaces(String userId, int placeListId) {
+    public User deleteUserPlaces(String userId, int placeListId) throws NoSuchElementException {
         User user = getUser(userId);
         user.removePlaceList(placeListId);
         userDao.save(user);
