@@ -1,6 +1,5 @@
 package findYourPlace.controller;
 
-import com.mongodb.util.JSON;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 
@@ -29,9 +28,6 @@ public class UserController {
         } catch (org.springframework.dao.DuplicateKeyException e){
             return new ResponseEntity(new JSONObject().put("errorDescription",
                     "Ya existe un usuario con username "+user.getUsername()).toString(),HttpStatus.CONFLICT);
-        } catch (Exception e){
-            return new ResponseEntity(new JSONObject().put("errorDescription",
-                    e.getMessage()).toString(),HttpStatus.CONFLICT);
         }
      }
 
@@ -40,10 +36,9 @@ public class UserController {
     public ResponseEntity getUser(@PathVariable String userId) {
         try {
             return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
-        } catch (Exception e){
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("description","El usuario no existe");
-            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+        } catch (java.util.NoSuchElementException e){
+            return new ResponseEntity(new JSONObject().put("description","El usuario no existe").toString(),
+                    HttpStatus.NOT_FOUND);
         }
     }
 
