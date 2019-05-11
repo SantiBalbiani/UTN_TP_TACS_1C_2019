@@ -7,12 +7,15 @@ import findYourPlace.mongoDB.Model;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public interface UserService {
 
     User createUser(User user);
 
-    User getUser(String userId);
+    void deleteUser(String userId) throws NoSuchElementException;
+
+    User getUser(String userId) throws NoSuchElementException;
 
     List<PlaceList> getUserPlaces(String userId);
 

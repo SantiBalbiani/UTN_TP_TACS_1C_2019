@@ -28,8 +28,7 @@ public class UserController {
             userService.createUser(user);
             return new ResponseEntity(user, HttpStatus.OK);
         } catch (DuplicateKeyException e){
-            return new ResponseEntity(new JSONObject().put("errorDescription",
-                    "Ya existe un usuario con username "+user.getUsername()).toString(),HttpStatus.CONFLICT);
+            return new ResponseEntity(HttpStatus.CONFLICT);
         }
      }
 
@@ -39,10 +38,21 @@ public class UserController {
         try {
             return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
         } catch (NoSuchElementException e){
-            return new ResponseEntity(new JSONObject().put("errorDescription","El usuario no existe").toString(),
-                    HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
+
+    //Borrar usuario
+    @RequestMapping(value = "/delete/{userId}",method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@PathVariable String userId) {
+        try {
+            userService.deleteUser(userId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (NoSuchElementException e){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     //Visualizar lista de listas de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.GET)
@@ -59,7 +69,6 @@ public class UserController {
             return new ResponseEntity(new JSONObject().put("errorDescription",
                     e.getMessage()),HttpStatus.CONFLICT);
         }
-
     }
 
     //Eliminar una lista de lugares del usuario
@@ -68,9 +77,8 @@ public class UserController {
         try {
             return new ResponseEntity(userService.deleteUserPlaces(userId, placeListId), HttpStatus.OK);
         } catch (Exception e){
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("description",e.getMessage());
-            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+            return new ResponseEntity(new JSONObject().put("errorDescription",
+                    e.getMessage()),HttpStatus.CONFLICT);
         }
     }
 
