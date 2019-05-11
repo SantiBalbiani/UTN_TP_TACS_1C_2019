@@ -4,10 +4,12 @@ import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import findYourPlace.service.UserService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +27,7 @@ public class UserController {
         try {
             userService.createUser(user);
             return new ResponseEntity(user, HttpStatus.OK);
-        } catch (org.springframework.dao.DuplicateKeyException e){
+        } catch (DuplicateKeyException e){
             return new ResponseEntity(new JSONObject().put("errorDescription",
                     "Ya existe un usuario con username "+user.getUsername()).toString(),HttpStatus.CONFLICT);
         }
@@ -36,7 +38,7 @@ public class UserController {
     public ResponseEntity getUser(@PathVariable String userId) {
         try {
             return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
-        } catch (java.util.NoSuchElementException e){
+        } catch (NoSuchElementException e){
             return new ResponseEntity(new JSONObject().put("errorDescription","El usuario no existe").toString(),
                     HttpStatus.NOT_FOUND);
         }
@@ -53,10 +55,9 @@ public class UserController {
     public ResponseEntity createUserPlaces(@PathVariable String userId, @RequestBody PlaceList placeList) {
         try {
             return new ResponseEntity(userService.createUserPlaces(userId, placeList), HttpStatus.OK);
-        } catch (Exception e){
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("description",e.getMessage());
-            return new ResponseEntity(jsonObject.toString(),HttpStatus.CONFLICT);
+        } catch (DuplicateKeyException e){
+            return new ResponseEntity(new JSONObject().put("errorDescription",
+                    e.getMessage()),HttpStatus.CONFLICT);
         }
 
     }

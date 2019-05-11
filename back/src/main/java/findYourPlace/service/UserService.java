@@ -4,6 +4,7 @@ import findYourPlace.entity.Place;
 import findYourPlace.entity.User;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.mongoDB.Model;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface UserService {
 
     List<PlaceList> getUserPlaces(String userId);
 
-    User createUserPlaces(String userId, PlaceList placeList) throws Exception;
+    User createUserPlaces(String userId, PlaceList placeList) throws DuplicateKeyException;
 
     User deleteUserPlaces(String userId, int placeListId);
 

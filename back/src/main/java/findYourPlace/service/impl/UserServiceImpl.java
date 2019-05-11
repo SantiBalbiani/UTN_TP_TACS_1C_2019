@@ -7,6 +7,7 @@ import findYourPlace.mongoDB.Model;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUserPlaces(String userId, PlaceList placeList) throws Exception {
+    public User createUserPlaces(String userId, PlaceList placeList) throws DuplicateKeyException {
         User user = getUser(userId);
         PlaceList existingPlaceList = user.findPlaceListByName(placeList.getName());
         if(existingPlaceList==null) {
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
             userDao.save(user);
             return user;
         } else {
-            throw new Exception("El usuario "+user.getUsername()+" ya tiene una lista con el nombre "+placeList.getName());
+            throw new DuplicateKeyException("El usuario "+user.getUsername()+" ya tiene una lista con el nombre "+placeList.getName());
         }
     }
 
