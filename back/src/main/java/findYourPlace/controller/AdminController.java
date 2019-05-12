@@ -13,10 +13,15 @@ import java.util.List;
 public class AdminController {
 
     @RequestMapping("/list_comparator/{listId}/{listId2}")
-    public List<Place> listComparator(@PathVariable int listId, @PathVariable int listId2) {
-        return Arrays.asList(new Place[]{
+    public HashMap<String, List<Place>> listComparator(@PathVariable int listId, @PathVariable int listId2) {
+
+        HashMap<String, List<Place>> response = new HashMap<>();
+
+        response.put("commonPlaces", Arrays.asList(new Place[]{
                 new Place("Panqueques de Carlitos")
-        });
+        }));
+
+        return response;
     }
 
     @RequestMapping("/place/{placeId}/interested")
