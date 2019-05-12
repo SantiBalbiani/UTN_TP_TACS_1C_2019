@@ -1,12 +1,12 @@
 package findYourPlace;
 
-import com.mongodb.util.JSON;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.hamcrest.core.IsEqual;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +31,7 @@ public class AdminControllerTest {
     private String serverAddress = "http://localhost";
 
     private String getApiUrl() {
-        return serverAddress + ":" + serverPort + "/";
+        return serverAddress + ":" + 8080 + "/";
     }
 
     @Test
@@ -45,7 +45,11 @@ public class AdminControllerTest {
 
         Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
 
-        String resultString = httpResponse.getEntity().getContent().toString();
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
+
+        System.out.print("result");
+        System.out.print(resultString);
+
         JSONObject json = new JSONObject(resultString);
 
         JSONArray commonPlaces = json.getJSONArray("commonPlaces");
@@ -63,7 +67,7 @@ public class AdminControllerTest {
 
         Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
 
-        String resultString = httpResponse.getEntity().getContent().toString();
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
 
         int interestedUsers = json.getInt("interestedUsers");
@@ -79,7 +83,7 @@ public class AdminControllerTest {
 
         Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
 
-        String resultString = httpResponse.getEntity().getContent().toString();
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
 
         int commonPlaces = json.getInt("totalRegisteredPlaces");
