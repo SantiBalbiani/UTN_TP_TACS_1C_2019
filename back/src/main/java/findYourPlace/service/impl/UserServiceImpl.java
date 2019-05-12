@@ -7,9 +7,12 @@ import findYourPlace.mongoDB.Model;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -25,9 +28,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(String userId) {
+    public User getUser(String userId) throws NoSuchElementException {
         Optional<User> user = userDao.findById(userId);
         return user.get();
+    }
+
+    @Override
+    public void deleteUser(String userId) throws NoSuchElementException {
+        Optional<User> user = userDao.findById(userId);
+        userDao.delete(user.get());
     }
 
     @Override
@@ -36,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUserPlaces(String userId, PlaceList placeList) throws Exception {
+    public User createUserPlaces(String userId, PlaceList placeList) throws DuplicateKeyException {
         User user = getUser(userId);
         PlaceList existingPlaceList = user.findPlaceListByName(placeList.getName());
         if(existingPlaceList==null) {
@@ -44,12 +53,12 @@ public class UserServiceImpl implements UserService {
             userDao.save(user);
             return user;
         } else {
-            throw new Exception("El usuario "+user.getUsername()+" ya tiene una lista con el nombre "+placeList.getName());
+            throw new DuplicateKeyException("El usuario "+user.getUsername()+" ya tiene una lista con el nombre "+placeList.getName());
         }
     }
 
     @Override
-    public User deleteUserPlaces(String userId, int placeListId) {
+    public User deleteUserPlaces(String userId, int placeListId) throws NoSuchElementException {
         User user = getUser(userId);
         user.removePlaceList(placeListId);
         userDao.save(user);
