@@ -46,7 +46,7 @@ public class SecurityController {
     }
     
     @PostMapping(value = "/prueba")
-    public String logout(@RequestBody PruebaTokenRequest pruebaTokenRequest) {
+    public String prueba(@RequestBody PruebaTokenRequest pruebaTokenRequest) {
         return "El token pertenece al usuario: " + tokenService.getUsername(pruebaTokenRequest.getToken());
     }
 
