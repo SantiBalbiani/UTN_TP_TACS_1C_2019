@@ -28,9 +28,13 @@ public class FourSquareServiceImpl implements FourSquareService {
     @Value("${foursquare.client-secret}")
     private String clientsecret;
 
+    private String version = "20192204";
+
+    private String buenosAiresLL = "-34.6161063,-58.480677";
+
     private String getHostUrl() {
         return "https://api.foursquare.com/v2/venues/search?" +
-                "client_id=" + clientid + "&client_secret=" + clientsecret + "&v=" + "20192204";
+                "client_id=" + clientid + "&client_secret=" + clientsecret + "&v=" + version + "&ll=" + buenosAiresLL;
     }
 
     @Override
