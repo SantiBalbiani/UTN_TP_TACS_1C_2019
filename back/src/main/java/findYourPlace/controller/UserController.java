@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import findYourPlace.service.UserService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -43,7 +42,7 @@ public class UserController {
     }
 
     //Borrar usuario
-    @RequestMapping(value = "/delete/{userId}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{userId}",method = RequestMethod.DELETE)
     public ResponseEntity deleteUser(@PathVariable String userId) {
         try {
             userService.deleteUser(userId);
@@ -71,19 +70,19 @@ public class UserController {
     }
 
     //Eliminar una lista de lugares del usuario
-    @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.DELETE)
-    public ResponseEntity deletePlaceList(@PathVariable String userId, @PathVariable int placeListId) {
+    @RequestMapping(value = "/{userId}/place_list/{placeListName}",method = RequestMethod.DELETE)
+    public ResponseEntity deletePlaceList(@PathVariable String userId, @PathVariable String placeListName) {
         try {
-            return new ResponseEntity(userService.deleteUserPlaces(userId, placeListId), HttpStatus.OK);
+            return new ResponseEntity(userService.deleteUserPlaces(userId, placeListName), HttpStatus.OK);
         } catch (NoSuchElementException e){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
     //Cambiar nombre de lista lugares del usuario
-    @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.PATCH)
-    public String modifyPlaceList(@PathVariable String userId, @PathVariable int placeListId, @RequestBody String placeListName) {
-        return userService.modifyUserPlaces(userId, placeListId, placeListName);
+    @RequestMapping(value = "/{userId}/place_list/{placeListCurrentName}",method = RequestMethod.PATCH)
+    public User modifyPlaceList(@PathVariable String userId, @PathVariable String placeListCurrentName, @RequestBody String placeListName) {
+        return userService.modifyUserPlaces(userId, placeListCurrentName, placeListName);
     }
 
 /*

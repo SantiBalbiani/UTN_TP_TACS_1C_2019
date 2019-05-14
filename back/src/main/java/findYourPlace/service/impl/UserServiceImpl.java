@@ -35,8 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String userId) throws NoSuchElementException {
-        Optional<User> user = userDao.findById(userId);
-        userDao.delete(user.get());
+        userDao.deleteById(userId);
     }
 
     @Override
@@ -47,27 +46,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserPlaces(String userId, PlaceList placeList) throws DuplicateKeyException {
         User user = getUser(userId);
-        PlaceList existingPlaceList = user.findPlaceListByName(placeList.getName());
-        if(existingPlaceList==null) {
-            user.addPlaceToPlaceList(placeList);
-            userDao.save(user);
-            return user;
-        } else {
-            throw new DuplicateKeyException("El usuario "+user.getUsername()+" ya tiene una lista con el nombre "+placeList.getName());
-        }
-    }
-
-    @Override
-    public User deleteUserPlaces(String userId, int placeListId) throws NoSuchElementException {
-        User user = getUser(userId);
-        user.removePlaceList(placeListId);
+        user.createPlaceList(placeList);
         userDao.save(user);
+        user = getUser(userId);
         return user;
     }
 
     @Override
-    public String modifyUserPlaces(String userId, int placeListId, String placeListName) {
-        return model.modifyUserPlaceList(userId, placeListId, placeListName) ? "Lista modificada con éxito" : "Error modificando la lista";
+    public User deleteUserPlaces(String userId, String placeListName) throws NoSuchElementException {
+        User user = getUser(userId);
+        user.removePlaceList(placeListName);
+        userDao.save(user);
+        user = getUser(userId);
+        return user;
+    }
+
+    @Override
+    public User modifyUserPlaces(String userId, String placeListCurrentName, String placeListName) {
+        User user = getUser(userId);
+        user.modifyPlaceList(placeListCurrentName,placeListName);
+        userDao.save(user);
+        user = getUser(userId);
+        return user;
     }
 
     public Place getPlace(long id) {

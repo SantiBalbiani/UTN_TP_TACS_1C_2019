@@ -3,6 +3,7 @@ package findYourPlace.entity;
 import findYourPlace.utils.Encrypt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -87,17 +88,38 @@ public class User {
         }
     }
 
+    public void createPlaceList(PlaceList placeList){
+        try{
+            findPlaceListByName(placeList.getName());
+            throw new DuplicateKeyException("");
+        } catch (NoSuchElementException e){
+            addPlaceToPlaceList(placeList);
+        }
+    }
+
+    public void modifyPlaceList(String placeListCurrentName,String placeListName){
+        PlaceList placeList = findPlaceListByName(placeListCurrentName);
+        placeList.setName(placeListName);
+    }
+
+
     public PlaceList findPlaceListByName(String placeListName) {
         for (int x=0; x < this.placeLists.size(); x++) {
             if(placeListName.equals(this.placeLists.get(x).getName())) {
                 return this.placeLists.get(x);
             }
         }
-        return null;
+        throw new NoSuchElementException();
     }
 
     public boolean removePlaceList(int placeListId) throws NoSuchElementException {
         PlaceList placeList = findPlaceList(placeListId);
+        this.placeLists.remove(placeList);
+        return true;
+    }
+
+    public boolean removePlaceList(String placeListName) throws NoSuchElementException {
+        PlaceList placeList = findPlaceListByName(placeListName);
         this.placeLists.remove(placeList);
         return true;
     }

@@ -21,9 +21,9 @@ public interface UserService {
 
     User createUserPlaces(String userId, PlaceList placeList) throws DuplicateKeyException;
 
-    User deleteUserPlaces(String userId, int placeListId) throws NoSuchElementException;
+    User deleteUserPlaces(String userId, String placeListName) throws NoSuchElementException;
 
-    String modifyUserPlaces(String userId, int placeListId, String placeListName);
+    User modifyUserPlaces(String userId, String placeListCurrentName, String placeListName);
 
     Place getPlace(long id);
 }
