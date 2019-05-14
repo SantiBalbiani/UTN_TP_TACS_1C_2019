@@ -33,7 +33,6 @@ public class AdminController {
         PlaceList placeList = user.getPlaceLists().get(userListPlaceIndex);
         PlaceList placeList2 = user2.getPlaceLists().get(userListPlaceIndex2);
 
-
         List<Place> commonPlaces = placeList.getPlaces().stream()
                 .filter(aPlace -> placeList2.isPlacePresent(aPlace))
                 .collect(Collectors.toList());

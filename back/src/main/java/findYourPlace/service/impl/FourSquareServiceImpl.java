@@ -27,12 +27,15 @@ public class FourSquareServiceImpl implements FourSquareService {
 
     @Value("${foursquare.client-secret}")
     private String clientsecret;
-	
-    private String host = "https://api.foursquare.com/v2/venues/search?ll=40.7,-74&client_id=" + clientid + "&client_secret=" + clientsecret + "&v=" + "20192204";
+
+    private String getHostUrl() {
+        return "https://api.foursquare.com/v2/venues/search?" +
+                "client_id=" + clientid + "&client_secret=" + clientsecret + "&v=" + "20192204";
+    }
 
     @Override
     public List<Place> searchPlaces(String description) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getHostUrl())
                 .queryParam("query", description);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -53,7 +56,7 @@ public class FourSquareServiceImpl implements FourSquareService {
 
     @Override
     public List<Place> searchPlaces(String description, Float latitude, Float longitude) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getHostUrl())
                 .queryParam("query", description)
                 .queryParam("ll", latitude + "," + longitude);
 

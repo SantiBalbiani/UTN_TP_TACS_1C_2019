@@ -6,6 +6,8 @@ import findYourPlace.entity.User;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.TokenService;
 
+import javassist.NotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -27,22 +30,16 @@ public class SecurityController {
 
     @CrossOrigin
     @PostMapping(value = "/login")
-    //@RequestMapping(value = "/login")
-    public String login(@RequestBody LoginRequest login) {
+    public String login(@RequestBody LoginRequest login) throws ResponseStatusException {
         //Llamar a loginForm
     	
     	User usuarioObtenido = userDao.findByUsername(login.getUsername());
     	
-    	if (usuarioObtenido == null)
-    	{
-    		return "Usuario buscado " + login.getUsername() + " no encontrado";
+    	if (usuarioObtenido == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
     	}
-    	else
-    	{
-    		return "Usuario buscado " + login.getUsername() + " encontrado y el token es: " + tokenService.getToken(usuarioObtenido);
-    	}
-    	
-        
+
+    	return "Usuario buscado " + login.getUsername() + " encontrado y el token es: " + tokenService.getToken(usuarioObtenido);
     }
     
     @PostMapping(value = "/prueba")
