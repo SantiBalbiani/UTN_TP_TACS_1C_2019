@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class PlaceList {
 
-    //private Long id;
     private String name;
     private List<Place> places;
 
@@ -20,11 +19,6 @@ public class PlaceList {
         this.name = name;
         this.places = new ArrayList<Place>();
     }
-
-    /*public String getId() {
-        return String.valueOf(id);
-    }
-    */
 
     public String getName() {
         return name;
@@ -43,11 +37,6 @@ public class PlaceList {
             this.places.add(place);
         }
     }
-/*
-    public void removePlace(Place place) {
-        this.places.remove(place);
-    }
-*/
 
     public void removePlace(long id) {
         for (int x= 0 ; x < this.places.size() ; x++) {
@@ -69,5 +58,9 @@ public class PlaceList {
         }
 
         return description;
+    }
+
+    public boolean isPlacePresent(Place place) {
+        return places.stream().anyMatch(aPlace -> aPlace.getPlaceId().equals(place.getPlaceId()));
     }
 }
