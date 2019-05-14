@@ -118,4 +118,28 @@ public class Model {
         }
         return null;
     }
+
+    public boolean markPlaceAsVisited(String userId, String placeListId, Place place) {
+        try {
+           Boolean placeIsUpdated = 
+           this.getUser(userId).
+           findPlaceList(Integer.parseInt(placeListId)).
+           markVisitedPlace(place);
+
+           PlaceList thePlaceList = this.getUser(userId).
+           findPlaceList(Integer.parseInt(placeListId));
+
+           if(placeIsUpdated){
+            this.addUserPlaces(userId, thePlaceList);
+            this.savePlace(place);
+           }
+           
+           //.getPlaces().stream().
+            //filter(aPlace -> place.getPlaceId().equals(aPlace.getPlaceId())).findAny().ifPresent( thePlace -> thePlace.setVisited(true));
+        } catch (Exception e) {
+            return false;
+        }       
+        
+        return false;
+	}
 }
