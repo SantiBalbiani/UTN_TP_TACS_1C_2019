@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import findYourPlace.service.UserService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import findYourPlace.entity.Place;
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -106,8 +107,14 @@ public class UserController {
         return new PlaceList("Test", new User("Usuario actual", "fakePassword"));
     }
 */
-    @RequestMapping(value = "/place_list/{listId}/{placeId}/visited",method = RequestMethod.POST)
-    public String visitedPlace(@PathVariable int listId, @PathVariable int placeId) {
-        return "Visitado";
+@RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.POST)
+public ResponseEntity markPlaceAsVisited
+(@PathVariable String userId, @PathVariable String placeListId, @RequestBody Place place)
+ {
+    try {
+        return new ResponseEntity(userService.markPlaceAsVisited(userId, placeListId, place), HttpStatus.OK);
+    } catch (DuplicateKeyException e){
+        return new ResponseEntity(HttpStatus.CONFLICT);
     }
+}
 }

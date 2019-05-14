@@ -74,4 +74,9 @@ public class UserServiceImpl implements UserService {
         return model.getPlace(id);
     }
 
+    @Override
+    public String markPlaceAsVisited(String userId, String placeListId, Place place) {
+        return model.markPlaceAsVisited(userId, placeListId, place) ? "Lugar agregado con éxito" : "Error agregando lugar";
+    }
+
 }

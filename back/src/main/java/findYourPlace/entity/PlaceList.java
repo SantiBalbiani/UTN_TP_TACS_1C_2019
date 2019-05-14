@@ -63,4 +63,8 @@ public class PlaceList {
     public boolean isPlacePresent(Place place) {
         return places.stream().anyMatch(aPlace -> aPlace.getPlaceId().equals(place.getPlaceId()));
     }
+
+    public Boolean markVisitedPlace(Place place) {
+        return place.setVisited(true);
+     }
 }

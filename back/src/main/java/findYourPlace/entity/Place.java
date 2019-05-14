@@ -12,6 +12,7 @@ public class Place {
     private final long id;
     private String placeId;
     private String name;
+    private boolean visited;
     private String address;
     private float  latitude;
     private float longitude;
@@ -22,6 +23,21 @@ public class Place {
     private String country;
 
     static private final AtomicLong counter = new AtomicLong();
+
+    /**
+     * @return the visited
+     */
+    public boolean isVisited() {
+        return visited;
+    }
+
+    /**
+     * @param visited the visited to set
+     */
+    public Boolean setVisited(boolean visited) {
+        this.visited = visited;
+        return true;
+    }
 
     public Place(String name) {
         this.id = counter.incrementAndGet();

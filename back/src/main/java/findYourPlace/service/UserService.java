@@ -26,4 +26,6 @@ public interface UserService {
     User modifyUserPlaces(String userId, String placeListCurrentName, String placeListName);
 
     Place getPlace(long id);
+
+    String markPlaceAsVisited(String userId, String placeListId, Place place);
 }
