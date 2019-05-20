@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
         User user = getUser(userId);
         user.createPlaceList(placeList);
         userDao.save(user);
-        user = getUser(userId);
         return user;
     }
 
@@ -57,7 +56,6 @@ public class UserServiceImpl implements UserService {
         User user = getUser(userId);
         user.removePlaceList(placeListName);
         userDao.save(user);
-        user = getUser(userId);
         return user;
     }
 
@@ -66,7 +64,6 @@ public class UserServiceImpl implements UserService {
         User user = getUser(userId);
         user.modifyPlaceList(placeListCurrentName,placeListName);
         userDao.save(user);
-        user = getUser(userId);
         return user;
     }
 
