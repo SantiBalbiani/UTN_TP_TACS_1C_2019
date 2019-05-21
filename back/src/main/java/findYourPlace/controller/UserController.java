@@ -24,33 +24,20 @@ public class UserController {
     //Creación de usuario
     @RequestMapping(value = "",method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody User user) {
-        try {
-            userService.createUser(user);
-            return new ResponseEntity(user, HttpStatus.OK);
-        } catch (DuplicateKeyException e){
-            return new ResponseEntity(HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity(userService.createUser(user), HttpStatus.OK);
      }
 
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public ResponseEntity getUser(@PathVariable String userId) {
-        try {
-            return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
-        } catch (NoSuchElementException e){
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
     }
 
     //Borrar usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.DELETE)
     public ResponseEntity deleteUser(@PathVariable String userId) {
-        try {
-            userService.deleteUser(userId);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (NoSuchElementException e){
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        userService.deleteUser(userId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
@@ -63,21 +50,13 @@ public class UserController {
     //Agregar una nueva lista de lugares al usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.POST)
     public ResponseEntity createUserPlaces(@PathVariable String userId, @RequestBody PlaceList placeList) {
-        try {
-            return new ResponseEntity(userService.createUserPlaces(userId, placeList), HttpStatus.OK);
-        } catch (DuplicateKeyException e){
-            return new ResponseEntity(HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity(userService.createUserPlaces(userId, placeList), HttpStatus.OK);
     }
 
     //Eliminar una lista de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list/{placeListName}",method = RequestMethod.DELETE)
     public ResponseEntity deletePlaceList(@PathVariable String userId, @PathVariable String placeListName) {
-        try {
-            return new ResponseEntity(userService.deleteUserPlaces(userId, placeListName), HttpStatus.OK);
-        } catch (NoSuchElementException e){
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity(userService.deleteUserPlaces(userId, placeListName), HttpStatus.OK);
     }
 
     //Cambiar nombre de lista lugares del usuario
@@ -110,11 +89,7 @@ public class UserController {
 @RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.POST)
 public ResponseEntity markPlaceAsVisited
 (@PathVariable String userId, @PathVariable String placeListId, @RequestBody Place place)
- {
-    try {
+    {
         return new ResponseEntity(userService.markPlaceAsVisited(userId, placeListId, place), HttpStatus.OK);
-    } catch (DuplicateKeyException e){
-        return new ResponseEntity(HttpStatus.CONFLICT);
     }
-}
 }
