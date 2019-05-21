@@ -90,7 +90,7 @@ public class User {
             throw new NoSuchElementException();
     }
 
-    public void createPlaceList(PlaceList placeList){
+    public void createPlaceList(PlaceList placeList) throws DuplicateKeyException {
         PlaceList placeListWithName = findPlaceListByNameNE(placeList.getName());
         if (placeListWithName==null)
             this.placeLists.add(placeList);
@@ -98,7 +98,7 @@ public class User {
             throw new DuplicateKeyException("");
     }
 
-    public void modifyPlaceList(String placeListCurrentName,String placeListName){
+    public void modifyPlaceList(String placeListCurrentName,String placeListName) throws NoSuchElementException{
         PlaceList placeList = findPlaceListByName(placeListCurrentName);
         placeList.setName(placeListName);
     }
