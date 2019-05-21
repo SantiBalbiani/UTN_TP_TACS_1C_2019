@@ -28,8 +28,6 @@ public class User {
     private String role;
     private List<PlaceList> placeLists;
 
-    static private final AtomicLong counter = new AtomicLong();
-
     @PersistenceConstructor
     public User(
             @JsonProperty("username") String username,
@@ -75,47 +73,34 @@ public class User {
         this.placeLists = placeLists;
     }
 
-    public boolean addPlaceToPlaceList(PlaceList placeList) {
-        this.placeLists.add(placeList);
-        return true;
+    private PlaceList findPlaceListByNameNE(String placeListName) {
+        for (PlaceList placelist:this.placeLists) {
+            if(placeListName.equals(placelist.getName())) {
+                return placelist;
+            }
+        }
+        return null;
     }
 
-    public PlaceList findPlaceList(int placeListId) throws NoSuchElementException {
-        try {
-            return this.placeLists.get(placeListId);
-        } catch (Exception e){
+    public PlaceList findPlaceListByName(String placeListName) throws NoSuchElementException {
+        PlaceList placeList = findPlaceListByNameNE(placeListName);
+        if(placeList!=null)
+            return placeList;
+        else
             throw new NoSuchElementException();
-        }
     }
 
     public void createPlaceList(PlaceList placeList){
-        try{
-            findPlaceListByName(placeList.getName());
+        PlaceList placeListWithName = findPlaceListByNameNE(placeList.getName());
+        if (placeListWithName==null)
+            this.placeLists.add(placeList);
+        else
             throw new DuplicateKeyException("");
-        } catch (NoSuchElementException e){
-            addPlaceToPlaceList(placeList);
-        }
     }
 
     public void modifyPlaceList(String placeListCurrentName,String placeListName){
         PlaceList placeList = findPlaceListByName(placeListCurrentName);
         placeList.setName(placeListName);
-    }
-
-
-    public PlaceList findPlaceListByName(String placeListName) {
-        for (int x=0; x < this.placeLists.size(); x++) {
-            if(placeListName.equals(this.placeLists.get(x).getName())) {
-                return this.placeLists.get(x);
-            }
-        }
-        throw new NoSuchElementException();
-    }
-
-    public boolean removePlaceList(int placeListId) throws NoSuchElementException {
-        PlaceList placeList = findPlaceList(placeListId);
-        this.placeLists.remove(placeList);
-        return true;
     }
 
     public boolean removePlaceList(String placeListName) throws NoSuchElementException {
@@ -124,18 +109,5 @@ public class User {
         return true;
     }
 
-    public boolean removePlaceList(PlaceList placeList) {
-        this.placeLists.remove(placeList);
-        return true;
-    }
 
-    public boolean modifyPlaceList(PlaceList placeList, String placeListName) {
-        for (int x=0; x < this.placeLists.size(); x++) {
-            if (this.placeLists.get(x) == placeList) {
-                this.placeLists.get(x).setName(placeListName);
-                return true;
-            }
-        }
-        return false;
-    }
 }

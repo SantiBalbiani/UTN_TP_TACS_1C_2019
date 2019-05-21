@@ -66,39 +66,13 @@ public class Model {
         for (int x = 0; x < users.size(); x++) {
             if (users.get(x).getId().equals(userId)) {
                 try {
-                    return this.users.get(x).addPlaceToPlaceList(placeList);
+                    this.users.get(x).createPlaceList(placeList);
+                    return true;
                 } catch (Exception e) {
                     return false;
                 }
             }
         }
-        return false;
-    }
-
-    public boolean removeUserPlaceList(String userId, int placeListId) {
-        for (int x = 0; x < users.size(); x++) {
-            if (users.get(x).getId().equals(userId)) {
-                try {
-                    return this.users.get(x).removePlaceList(this.users.get(x).findPlaceList(placeListId));
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean modifyUserPlaceList(String userId, int placeListId, String placeListName) {
-        for (int x = 0; x < users.size(); x++) {
-            if (users.get(x).getId().equals(userId)) {
-                try {
-                    return this.users.get(x).modifyPlaceList(this.users.get(x).findPlaceList(placeListId), placeListName);
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-        }
-
         return false;
     }
 
@@ -123,11 +97,11 @@ public class Model {
         try {
            Boolean placeIsUpdated = 
            this.getUser(userId).
-           findPlaceList(Integer.parseInt(placeListId)).
+           findPlaceListByName(placeListId).
            markVisitedPlace(place);
 
            PlaceList thePlaceList = this.getUser(userId).
-           findPlaceList(Integer.parseInt(placeListId));
+           findPlaceListByName(placeListId);
 
            if(placeIsUpdated){
             this.addUserPlaces(userId, thePlaceList);
