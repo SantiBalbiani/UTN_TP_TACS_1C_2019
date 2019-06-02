@@ -23,7 +23,7 @@ public interface UserService {
 
     List<PlaceList> getUserPlaces(String userId) throws CouldNotRetrieveElementException;
 
-    User createUserPlaces(String userId, PlaceList placeList) throws CouldNotSaveElementException;
+    User createUserPlaces(String userId, PlaceList placeList) throws  CouldNotSaveElementException;
 
     User deleteUserPlaces(String userId, String placeListName) throws CouldNotDeleteElementException;
 

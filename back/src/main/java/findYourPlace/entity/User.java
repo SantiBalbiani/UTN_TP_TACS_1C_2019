@@ -1,5 +1,7 @@
 package findYourPlace.entity;
 
+import findYourPlace.entity.exception.ElementAlreadyExistsException;
+import findYourPlace.entity.exception.ElementDoesNotExistException;
 import findYourPlace.utils.Encrypt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -73,40 +75,36 @@ public class User {
         this.placeLists = placeLists;
     }
 
-    private PlaceList findPlaceListByNameNE(String placeListName) {
+    public PlaceList findPlaceListByName(String placeListName) throws ElementDoesNotExistException {
         for (PlaceList placelist:this.placeLists) {
             if(placeListName.equals(placelist.getName())) {
                 return placelist;
             }
         }
-        return null;
+        throw new ElementDoesNotExistException("Place "+placeListName+" does not exist");
     }
 
-    public PlaceList findPlaceListByName(String placeListName) throws NoSuchElementException {
-        PlaceList placeList = findPlaceListByNameNE(placeListName);
-        if(placeList!=null)
-            return placeList;
-        else
-            throw new NoSuchElementException();
+    private void validatePlaceListName(String placeListName) throws ElementAlreadyExistsException {
+        for (PlaceList placelist:this.placeLists) {
+            if(placeListName.equals(placelist.getName())) {
+                throw new ElementAlreadyExistsException("There's already a list named "+placelist.getName());
+            }
+        }
     }
 
-    public void createPlaceList(PlaceList placeList) throws DuplicateKeyException {
-        PlaceList placeListWithName = findPlaceListByNameNE(placeList.getName());
-        if (placeListWithName==null)
-            this.placeLists.add(placeList);
-        else
-            throw new DuplicateKeyException("");
+    public void createPlaceList(PlaceList placeList) throws ElementAlreadyExistsException {
+        validatePlaceListName(placeList.getName());
+        this.placeLists.add(placeList);
     }
 
-    public void modifyPlaceList(String placeListCurrentName,String placeListName) throws NoSuchElementException{
+    public void modifyPlaceList(String placeListCurrentName,String placeListName) throws ElementDoesNotExistException {
         PlaceList placeList = findPlaceListByName(placeListCurrentName);
         placeList.setName(placeListName);
     }
 
-    public boolean removePlaceList(String placeListName) throws NoSuchElementException {
+    public void removePlaceList(String placeListName) throws ElementDoesNotExistException {
         PlaceList placeList = findPlaceListByName(placeListName);
         this.placeLists.remove(placeList);
-        return true;
     }
 
 

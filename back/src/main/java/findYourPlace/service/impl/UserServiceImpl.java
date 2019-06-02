@@ -3,6 +3,8 @@ package findYourPlace.service.impl;
 import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
+import findYourPlace.entity.exception.ElementAlreadyExistsException;
+import findYourPlace.entity.exception.ElementDoesNotExistException;
 import findYourPlace.mongoDB.Model;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
         try {
             Optional<User> user = userDao.findById(userId);
             return user.get();
-        } catch (DuplicateKeyException ex){
+        } catch (NoSuchElementException ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
             user.createPlaceList(placeList);
             userDao.save(user);
             return user;
-        } catch (CouldNotRetrieveElementException ex){
+        } catch (ElementAlreadyExistsException ex){
             throw new CouldNotSaveElementException(ex.getMessage());
         }
     }
@@ -78,7 +80,7 @@ public class UserServiceImpl implements UserService {
             user.removePlaceList(placeListName);
             userDao.save(user);
             return user;
-        } catch (CouldNotRetrieveElementException ex){
+        } catch (ElementDoesNotExistException ex){
             throw new CouldNotDeleteElementException(ex.getMessage());
         }
     }
@@ -90,7 +92,7 @@ public class UserServiceImpl implements UserService {
             user.modifyPlaceList(placeListCurrentName, placeListNewName);
             userDao.save(user);
             return user;
-        } catch (CouldNotRetrieveElementException ex){
+        } catch (ElementDoesNotExistException ex){
             throw new CouldNotModifyElementException(ex.getMessage());
         }
     }
