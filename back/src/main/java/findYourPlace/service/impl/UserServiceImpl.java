@@ -6,6 +6,10 @@ import findYourPlace.entity.User;
 import findYourPlace.mongoDB.Model;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
+import findYourPlace.service.impl.exception.CouldNotDeleteElementException;
+import findYourPlace.service.impl.exception.CouldNotModifyElementException;
+import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
+import findYourPlace.service.impl.exception.CouldNotSaveElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -23,50 +27,75 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public User createUser(User user) {
-        return userDao.save(user);
+    public User createUser(User user) throws CouldNotSaveElementException {
+        try {
+            return userDao.save(user);
+        } catch (DuplicateKeyException ex){
+            throw new CouldNotSaveElementException(ex.getMessage());
+        }
     }
 
     @Override
-    public User getUser(String userId) throws NoSuchElementException {
-        Optional<User> user = userDao.findById(userId);
-        return user.get();
+    public User getUser(String userId) throws CouldNotRetrieveElementException {
+        try {
+            Optional<User> user = userDao.findById(userId);
+            return user.get();
+        } catch (DuplicateKeyException ex){
+            throw new CouldNotRetrieveElementException(ex.getMessage());
+        }
     }
 
     @Override
-    public void deleteUser(String userId) throws NoSuchElementException {
-        userDao.deleteById(userId);
+    public void deleteUser(String userId) throws CouldNotDeleteElementException {
+        try{
+            userDao.deleteById(userId);
+        } catch (NoSuchElementException ex){
+            throw new CouldNotDeleteElementException(ex.getMessage());
+        }
     }
 
     @Override
-    public List<PlaceList> getUserPlaces(String userId) {
+    public List<PlaceList> getUserPlaces(String userId) throws CouldNotRetrieveElementException {
         return getUser(userId).getPlaceLists();
     }
 
     @Override
-    public User createUserPlaces(String userId, PlaceList placeList) throws DuplicateKeyException {
-        User user = getUser(userId);
-        user.createPlaceList(placeList);
-        userDao.save(user);
-        return user;
+    public User createUserPlaces(String userId, PlaceList placeList) throws CouldNotSaveElementException {
+        try {
+            User user = getUser(userId);
+            user.createPlaceList(placeList);
+            userDao.save(user);
+            return user;
+        } catch (CouldNotRetrieveElementException ex){
+            throw new CouldNotSaveElementException(ex.getMessage());
+        }
     }
 
     @Override
-    public User deleteUserPlaces(String userId, String placeListName) throws NoSuchElementException {
-        User user = getUser(userId);
-        user.removePlaceList(placeListName);
-        userDao.save(user);
-        return user;
+    public User deleteUserPlaces(String userId, String placeListName) throws CouldNotDeleteElementException {
+        try{
+            User user = getUser(userId);
+            user.removePlaceList(placeListName);
+            userDao.save(user);
+            return user;
+        } catch (CouldNotRetrieveElementException ex){
+            throw new CouldNotDeleteElementException(ex.getMessage());
+        }
     }
 
     @Override
-    public User modifyUserPlaces(String userId, String placeListCurrentName, String placeListName) {
-        User user = getUser(userId);
-        user.modifyPlaceList(placeListCurrentName,placeListName);
-        userDao.save(user);
-        return user;
+    public User modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotModifyElementException {
+        try {
+            User user = getUser(userId);
+            user.modifyPlaceList(placeListCurrentName, placeListNewName);
+            userDao.save(user);
+            return user;
+        } catch (CouldNotRetrieveElementException ex){
+            throw new CouldNotModifyElementException(ex.getMessage());
+        }
     }
 
+    @Override
     public Place getPlace(long id) {
         return model.getPlace(id);
     }

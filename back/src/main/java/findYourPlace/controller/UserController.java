@@ -65,6 +65,7 @@ public class UserController {
         return userService.modifyUserPlaces(userId, placeListCurrentName, placeListName);
     }
 
+
 /*
     @RequestMapping(value = "/place_list",method = RequestMethod.POST)
     public PlaceList createPlaceList(@RequestBody String name) {
