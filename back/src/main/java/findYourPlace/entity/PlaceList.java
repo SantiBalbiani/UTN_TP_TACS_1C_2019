@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import findYourPlace.entity.exception.ElementAlreadyExistsException;
+import findYourPlace.entity.exception.ElementDoesNotExistException;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,6 +22,10 @@ public class PlaceList {
         this.places = new ArrayList<Place>();
     }
 
+    public void removePlace(Place place){
+       this.places.remove(place);
+    }
+
     public String getName() {
         return name;
     }
@@ -32,10 +38,26 @@ public class PlaceList {
         return places;
     }
 
-    public void addPlace(Place place) {
-        if(!this.places.contains(place)) {
-            this.places.add(place);
+    public Place getPlaceByPlaceId(String id) throws ElementDoesNotExistException {
+        for(Place place:places){
+            if(place.getPlaceId().equals(id)){
+                return place;
+            }
         }
+        throw new ElementDoesNotExistException("Place with id "+id+" does not belong to list "+getName());
+    }
+
+    public void validatePlace(Place _place) throws ElementAlreadyExistsException {
+        for(Place place:places){
+            if(place.getPlaceId().equals(_place.getPlaceId())){
+                throw new ElementAlreadyExistsException("Place with id "+_place.getPlaceId()+" already belongs to list "+getName());
+            }
+        }
+    }
+
+    public void addPlace(Place place) throws ElementAlreadyExistsException {
+        validatePlace(place);
+        places.add(place);
     }
 
     public void removePlace(long id) {
@@ -44,6 +66,11 @@ public class PlaceList {
                 this.places.remove(this.places.get(x));
             }
         }
+    }
+
+    public void removePlaceByPlaceId(String placeId) {
+        Place place = getPlaceByPlaceId(placeId);
+        removePlace(place);
     }
 
     public void setPlaces(java.util.List<Place> places) {

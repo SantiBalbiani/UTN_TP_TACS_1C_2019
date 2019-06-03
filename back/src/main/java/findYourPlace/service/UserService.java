@@ -25,11 +25,19 @@ public interface UserService {
 
     User createUserPlaces(String userId, PlaceList placeList) throws  CouldNotSaveElementException;
 
+    PlaceList getUserPlacesByName(String userId, String placeListName) throws  CouldNotRetrieveElementException;
+
     User deleteUserPlaces(String userId, String placeListName) throws CouldNotDeleteElementException;
 
-    User modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotModifyElementException;
+    PlaceList modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotModifyElementException;
 
-    Place getPlace(long id);
+    PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotModifyElementException;
 
-    String markPlaceAsVisited(String userId, String placeListId, Place place);
+    PlaceList addPlaceToPlaceList(String userId, String placeListName, String placeId) throws CouldNotModifyElementException;
+
+    Place getPlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException ;
+
+    User deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotDeleteElementException;
+
+    Place markPlaceAsVisited(String userId, String placeListId, String placeId) throws CouldNotModifyElementException;
 }

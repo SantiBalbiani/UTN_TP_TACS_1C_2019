@@ -3,8 +3,11 @@ package findYourPlace.telegram;
 import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
+import findYourPlace.entity.exception.ElementAlreadyExistsException;
 import findYourPlace.service.FourSquareService;
 import findYourPlace.service.UserService;
+import findYourPlace.service.impl.exception.CouldNotModifyElementException;
+import findYourPlace.service.impl.exception.CouldNotSaveElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -88,17 +91,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String idUser = parameters[1];
         String placeListName = parameters[2];
 
-        User user = userService.getUser(idUser);
-
-        if(user == null) {
-            return "{idUsuario} inválido";
-        }
-
-        PlaceList placeList = user.findPlaceListByName(placeListName);
-
-        if(placeList == null) {
-            return "{nombreLista} inválido";
-        }
+        PlaceList placeList = userService.getUserPlacesByName(idUser,placeListName);
 
         return placeList.toString();
     }
@@ -110,27 +103,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         String idUser = parameters[1];
         String placeListName = parameters[2];
-        long idLugar = Long.parseLong(parameters[3]);
+        String idLugar = parameters[3];
 
-        User user = userService.getUser(idUser);
-
-        if(user == null) {
-            return "{idUsuario} inválido";
-        }
-
-        PlaceList placeList = user.findPlaceListByName(placeListName);
-
-        if(placeList == null) {
-            return "{nombreLista} inválido";
-        }
-
-        Place place = userService.getPlace(idLugar);
-
-        if(placeList == null) {
-            return "{idLugar} inválido";
-        }
-
-        placeList.addPlace(place);
+        userService.addPlaceToPlaceList(idUser,placeListName,idLugar);
 
         return "Lugar agregado con éxito";
     }

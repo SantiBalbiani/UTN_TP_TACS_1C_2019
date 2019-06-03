@@ -26,19 +26,19 @@ public class PlaceDeserializer extends StdDeserializer<Place> {
     public Place deserialize(JsonParser jp, DeserializationContext ctxt) 
       throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
-        String id = getStringNodeAttribute(node, "id");
+        String placeId = getStringNodeAttribute(node, "placeId");
         String name = getStringNodeAttribute(node, "name");
         JsonNode location = (node != null) ? node.get("location") : null;
         String address = getStringNodeAttribute(location, "address");
-        Float lat = getFloatNodeAttribute(location, "lat");
-        Float lng = getFloatNodeAttribute(location, "lng");
+        Float lat = getFloatNodeAttribute(location, "latitude");
+        Float lng = getFloatNodeAttribute(location, "longitude");
         String postalCode = getStringNodeAttribute(location, "postalCode");
         String cc = getStringNodeAttribute(location, "cc");
         String city = getStringNodeAttribute(location, "city");
         String state = getStringNodeAttribute(location, "state");
         String country = getStringNodeAttribute(location, "country");
 
-        return new Place(id, name, address, lat, lng, postalCode, cc, city, state, country);
+        return new Place(placeId, name, address, lat, lng, postalCode, cc, city, state, country);
     }
 
     private String getStringNodeAttribute(JsonNode node, String attr) {

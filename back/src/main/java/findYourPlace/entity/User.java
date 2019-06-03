@@ -107,5 +107,19 @@ public class User {
         this.placeLists.remove(placeList);
     }
 
+    public void addPlaceToPlaceList(String placeListName, Place place) throws ElementAlreadyExistsException {
+        PlaceList placeList = findPlaceListByName(placeListName);
+        placeList.addPlace(place);
+    }
 
+    public Place getPlaceFromPlaceList(String placeListName,String placeId){
+        PlaceList placeList = findPlaceListByName(placeListName);
+        return placeList.getPlaceByPlaceId(placeId);
+    }
+
+    public void deletePlaceFromPlaceList(String placeListName,String placeId){
+        PlaceList placeList = findPlaceListByName(placeListName);
+        Place place = getPlaceFromPlaceList(placeListName,placeId);
+        placeList.removePlace(place);
+    }
 }

@@ -9,7 +9,7 @@ import findYourPlace.utils.PlaceDeserializer;
 @JsonDeserialize(using = PlaceDeserializer.class)
 public class Place {
 
-    private final long id;
+    private long id;
     private String placeId;
     private String name;
     private boolean visited;
@@ -43,9 +43,15 @@ public class Place {
         this.id = counter.incrementAndGet();
         this.name = name;
     }
-    
+
     public Place(String name, long id) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Place(String placeId, String name) {
+        this.id = counter.incrementAndGet();
+        this.placeId = placeId;
         this.name = name;
     }
 
@@ -76,6 +82,7 @@ public class Place {
         this.country = country;
     }
 
+    public Place(){}
 
     public long getId() {
         return id;

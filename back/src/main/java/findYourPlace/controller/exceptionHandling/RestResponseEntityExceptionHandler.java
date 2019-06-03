@@ -30,7 +30,7 @@ public class RestResponseEntityExceptionHandler
 
     @ExceptionHandler({CouldNotModifyElementException.class})
     public ResponseEntity<Object> handleModify(CouldNotModifyElementException ex) {
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @ExceptionHandler({CouldNotRetrieveElementException.class})

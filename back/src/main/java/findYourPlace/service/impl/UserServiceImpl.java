@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -74,6 +75,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public  PlaceList getUserPlacesByName(String userId, String placeListName) throws  CouldNotRetrieveElementException {
+        try{
+            User user = getUser(userId);
+            return user.findPlaceListByName(placeListName);
+        } catch (ElementDoesNotExistException ex){
+            throw new CouldNotRetrieveElementException(ex.getMessage());
+        }
+    }
+
+    @Override
     public User deleteUserPlaces(String userId, String placeListName) throws CouldNotDeleteElementException {
         try{
             User user = getUser(userId);
@@ -86,25 +97,83 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotModifyElementException {
+    public PlaceList modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotModifyElementException {
         try {
             User user = getUser(userId);
             user.modifyPlaceList(placeListCurrentName, placeListNewName);
             userDao.save(user);
-            return user;
+            return user.findPlaceListByName(placeListNewName);
         } catch (ElementDoesNotExistException ex){
             throw new CouldNotModifyElementException(ex.getMessage());
         }
     }
 
     @Override
-    public Place getPlace(long id) {
-        return model.getPlace(id);
+    public PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotModifyElementException{
+        try {
+            User user = getUser(userId);
+            user.addPlaceToPlaceList(placeListName, place);
+            userDao.save(user);
+            return user.findPlaceListByName(placeListName);
+        } catch (ElementDoesNotExistException ex) {
+            //List does not exist
+            throw new CouldNotSaveElementException(ex.getMessage());
+        } catch (ElementAlreadyExistsException ex){
+            //Element already belongs to list
+            throw new CouldNotSaveElementException(ex.getMessage());
+        }
     }
 
     @Override
-    public String markPlaceAsVisited(String userId, String placeListId, Place place) {
-        return model.markPlaceAsVisited(userId, placeListId, place) ? "Lugar agregado con éxito" : "Error agregando lugar";
+    public PlaceList addPlaceToPlaceList(String userId, String placeListName, String placeId) throws CouldNotModifyElementException{
+        try {
+            User user = getUser(userId);
+            Place place = new Place(placeId);
+            user.addPlaceToPlaceList(placeListName, place);
+            userDao.save(user);
+            return user.findPlaceListByName(placeListName);
+        } catch (ElementDoesNotExistException ex) {
+            //List does not exist
+            throw new CouldNotSaveElementException(ex.getMessage());
+        } catch (ElementAlreadyExistsException ex){
+            //Element already belongs to list
+            throw new CouldNotSaveElementException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Place getPlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException {
+        try {
+            User user = getUser(userId);
+            return user.getPlaceFromPlaceList(placeListName, placeId);
+        } catch (ElementDoesNotExistException ex){
+            throw new CouldNotRetrieveElementException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public User deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotDeleteElementException {
+        try {
+            User user = getUser(userId);
+            user.deletePlaceFromPlaceList(placeListName, placeId);
+            userDao.save(user);
+            return user;
+        } catch (ElementDoesNotExistException ex){
+            throw new CouldNotDeleteElementException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Place markPlaceAsVisited(String userId, String placeListName, String placeId) {
+        try {
+            User user = getUser(userId);
+            Place place = user.getPlaceFromPlaceList(placeListName, placeId);
+            place.setVisited(true);
+            userDao.save(user);
+            return place;
+        } catch (ElementDoesNotExistException ex){
+            throw new CouldNotModifyElementException(ex.getMessage());
+        }
     }
 
 }
