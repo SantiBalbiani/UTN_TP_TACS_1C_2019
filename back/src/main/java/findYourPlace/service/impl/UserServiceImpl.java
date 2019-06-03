@@ -14,9 +14,7 @@ import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
 import findYourPlace.service.impl.exception.CouldNotSaveElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.NoSuchElementException;

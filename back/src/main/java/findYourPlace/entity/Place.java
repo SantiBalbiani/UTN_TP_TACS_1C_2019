@@ -1,10 +1,9 @@
 package findYourPlace.entity;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import findYourPlace.utils.PlaceDeserializer;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 @JsonDeserialize(using = PlaceDeserializer.class)
 public class Place {

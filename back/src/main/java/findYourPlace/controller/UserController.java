@@ -1,20 +1,13 @@
 package findYourPlace.controller;
 
+import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import findYourPlace.service.UserService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import findYourPlace.entity.Place;
-import sun.security.krb5.internal.crypto.RsaMd5CksumType;
 
 @RestController
 @RequestMapping("/user")

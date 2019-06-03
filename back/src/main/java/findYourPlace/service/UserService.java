@@ -1,17 +1,14 @@
 package findYourPlace.service;
 
 import findYourPlace.entity.Place;
-import findYourPlace.entity.User;
 import findYourPlace.entity.PlaceList;
-import findYourPlace.mongoDB.Model;
+import findYourPlace.entity.User;
 import findYourPlace.service.impl.exception.CouldNotDeleteElementException;
 import findYourPlace.service.impl.exception.CouldNotModifyElementException;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
 import findYourPlace.service.impl.exception.CouldNotSaveElementException;
-import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public interface UserService {
 

@@ -4,14 +4,11 @@ import findYourPlace.service.impl.exception.CouldNotDeleteElementException;
 import findYourPlace.service.impl.exception.CouldNotModifyElementException;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
 import findYourPlace.service.impl.exception.CouldNotSaveElementException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler

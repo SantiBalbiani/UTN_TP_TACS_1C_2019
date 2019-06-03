@@ -1,10 +1,5 @@
 package findYourPlace.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-
 import findYourPlace.entity.Place;
 import findYourPlace.mongoDB.Model;
 import findYourPlace.service.FourSquareService;
@@ -16,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @Service
 public class FourSquareServiceImpl implements FourSquareService {
