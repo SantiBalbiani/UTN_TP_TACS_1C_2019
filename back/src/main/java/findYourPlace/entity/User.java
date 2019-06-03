@@ -109,12 +109,12 @@ public class User {
         placeList.addPlace(place);
     }
 
-    public Place getPlaceFromPlaceList(String placeListName,String placeId){
+    public Place getPlaceFromPlaceList(String placeListName,String placeId) throws ElementDoesNotExistException {
         PlaceList placeList = findPlaceListByName(placeListName);
         return placeList.getPlaceByPlaceId(placeId);
     }
 
-    public void deletePlaceFromPlaceList(String placeListName,String placeId){
+    public void deletePlaceFromPlaceList(String placeListName,String placeId) throws ElementDoesNotExistException {
         PlaceList placeList = findPlaceListByName(placeListName);
         Place place = getPlaceFromPlaceList(placeListName,placeId);
         placeList.removePlace(place);
