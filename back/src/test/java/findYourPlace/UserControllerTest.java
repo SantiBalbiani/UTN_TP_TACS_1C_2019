@@ -1,5 +1,6 @@
 package findYourPlace;
 
+import findYourPlace.entity.Place;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
@@ -34,14 +35,36 @@ public class UserControllerTest {
         String initialUsername = "xbkjgfsa"+String.valueOf(x);
         String listName = "placeList";
         String newListName = "newPlaceList";
+        String placeId = "placeId";
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
         testGetUser(initialUsername,id);
         testCreatePlaceList(id,listName);
         testGetPlaceLists(id);
+        testGetPlaceListByName(id,listName);
         testModifyPlaceList(id,listName,newListName);
+        testAddPlaceToUserPlace(id,newListName,placeId);
+        testGetPlaceFromUserPlaces(id,newListName,placeId);
+        testMarkPlaceAsVisited(id,newListName,placeId);
+        testDeletePlaceFromUserPlaces(id,newListName,placeId);
         testDeletePlaceList(id,newListName);
+
+
+        //Delete created user
+        testDeleteUser(id);
+    }
+
+    @Test
+    public void addPlaceToNonExistingUserPlace() throws IOException, JSONException {
+        //Set variables
+        double x = Math.random();
+        String initialUsername = "xbkjgfsa"+String.valueOf(x);
+        String listName = "placeList";
+
+        //Create user, get user, create list, get list, delete list
+        String id = testCreateUser(initialUsername,"user");
+        testAddPlaceToNonExistingUserPlace(id,"nonExistingListName","placeId");
 
         //Delete created user
         testDeleteUser(id);
@@ -56,9 +79,24 @@ public class UserControllerTest {
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
-        testGetUser(initialUsername,id);
         testCreatePlaceList(id,listName);
         testCreateDuplicatedPlaceList(id,listName);
+
+        //Delete created user
+        testDeleteUser(id);
+    }
+
+    @Test
+    public void testMarkNonExistingPlaceAsVisited() throws IOException, JSONException {
+        //Set variables
+        double x = Math.random();
+        String initialUsername = "xbkjgfsa"+String.valueOf(x);
+        String listName = "placeList";
+
+        //Create user, get user, create list, get list, delete list
+        String id = testCreateUser(initialUsername,"user");
+        testCreatePlaceList(id,listName);
+        testMarkNonExistingPlaceAsVisited(id,listName,"nonExistingPlaceId");
 
         //Delete created user
         testDeleteUser(id);
@@ -143,6 +181,94 @@ public class UserControllerTest {
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
 
+    public void testMarkNonExistingPlaceAsVisited(String userId, String placeListName, String placeId) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+        HttpPatch request = new HttpPatch(url);
+
+        request.setHeader("Content-Type", "application/json");
+        request.addHeader(HttpHeaders.CONNECTION, "Close");
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+
+        Assert.assertEquals(HttpStatus.SC_NOT_MODIFIED,httpResponse.getStatusLine().getStatusCode());
+    }
+
+    public void testAddPlaceToUserPlace(String username, String placeListName, String placeId) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+username+"/"+"place_list"+"/"+placeListName;
+        HttpPut request = new HttpPut(url);
+
+        request.setHeader("Content-Type", "application/json");
+        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.setEntity(new StringEntity("{\"placeId\":\"" + placeId +"\"}",
+                ContentType.create("application/json")));
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject json = new JSONObject(resultString);
+        String retrievedListName = json.getString("name");
+        Assert.assertEquals(placeListName,retrievedListName);
+     }
+
+    public void testAddPlaceToNonExistingUserPlace(String username, String placeListName, String placeId) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+username+"/"+"place_list"+"/"+placeListName;
+        HttpPut request = new HttpPut(url);
+
+        request.setHeader("Content-Type", "application/json");
+        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.setEntity(new StringEntity("{\"placeId\":\"" + placeId +"\"}",
+                ContentType.create("application/json")));
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+
+        Assert.assertEquals(HttpStatus.SC_NOT_MODIFIED,httpResponse.getStatusLine().getStatusCode());
+
+    }
+
+    public void testDeletePlaceFromUserPlaces(String userId, String placeListName, String placeId) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+        HttpDelete request = new HttpDelete(url);
+
+        request.setHeader("Content-Type", "application/json");
+        request.addHeader(HttpHeaders.CONNECTION, "Close");
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject json = new JSONObject(resultString);
+        String retrievedListName = json.getString("name");
+        Assert.assertEquals(placeListName,retrievedListName);
+    }
+
+    public void testGetPlaceFromUserPlaces(String userId, String placeListName, String placeId) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+        HttpGet request = new HttpGet(url);
+
+        request.setHeader("Content-Type", "application/json");
+        request.addHeader(HttpHeaders.CONNECTION, "Close");
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject json = new JSONObject(resultString);
+        String retrievedPlaceId = json.getString("placeId");
+        Assert.assertEquals(placeId,retrievedPlaceId);
+    }
+
+    public void testMarkPlaceAsVisited(String userId, String placeListName, String placeId) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+        HttpPatch request = new HttpPatch(url);
+
+        request.setHeader("Content-Type", "application/json");
+        request.addHeader(HttpHeaders.CONNECTION, "Close");
+
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject json = new JSONObject(resultString);
+        Assert.assertTrue(json.getBoolean("visited"));
+    }
+
     public String testCreateUser(String username,String role) throws IOException, JSONException {
         String url = getApiUrl();
         HttpPost request = new HttpPost(url);
@@ -204,6 +330,18 @@ public class UserControllerTest {
         Assert.assertEquals(HttpStatus.SC_CONFLICT,httpResponse.getStatusLine().getStatusCode());
     }
 
+    public void testGetPlaceListByName(String userId,String listName) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+listName;
+        HttpGet request = new HttpGet(url);
+        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+        Assert.assertEquals(HttpStatus.SC_OK,httpResponse.getStatusLine().getStatusCode());
+        String resultString = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject json = new JSONObject(resultString);
+        String retrievedListName = json.getString("name");
+        Assert.assertEquals(listName,retrievedListName);
+    }
+
     public void testGetPlaceLists(String userId) throws IOException, JSONException {
         String url = getApiUrl()+"/"+userId+"/"+"place_list";
         HttpUriRequest request = new HttpGet(url);
@@ -236,7 +374,7 @@ public class UserControllerTest {
                 ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
-        Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals(HttpStatus.SC_NOT_MODIFIED,httpResponse.getStatusLine().getStatusCode());
     }
 
     public void testModifyPlaceList(String userId,String placeListCurrentName, String placeListName) throws IOException, JSONException {
@@ -251,9 +389,7 @@ public class UserControllerTest {
 
         String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
-        JSONArray jsonArray = json.getJSONArray("placeLists");
-        JSONObject list = jsonArray.getJSONObject(jsonArray.length()-1);
-        String generatedListName = list.getString("name");
+        String generatedListName = json.getString("name");
         Assert.assertEquals(placeListName,generatedListName);
     }
 

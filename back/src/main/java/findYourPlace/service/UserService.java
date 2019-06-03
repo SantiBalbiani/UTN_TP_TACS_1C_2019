@@ -34,7 +34,7 @@ public interface UserService {
 
     Place getPlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException ;
 
-    User deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotDeleteElementException;
+    PlaceList deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotDeleteElementException;
 
     Place markPlaceAsVisited(String userId, String placeListId, String placeId) throws CouldNotModifyElementException;
 }

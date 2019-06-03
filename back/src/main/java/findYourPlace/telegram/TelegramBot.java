@@ -2,17 +2,12 @@ package findYourPlace.telegram;
 
 import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
-import findYourPlace.entity.User;
-import findYourPlace.entity.exception.ElementAlreadyExistsException;
 import findYourPlace.service.FourSquareService;
 import findYourPlace.service.UserService;
-import findYourPlace.service.impl.exception.CouldNotModifyElementException;
-import findYourPlace.service.impl.exception.CouldNotSaveElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 

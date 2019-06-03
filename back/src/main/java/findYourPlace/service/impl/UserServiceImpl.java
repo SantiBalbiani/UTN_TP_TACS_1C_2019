@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
             //List does not exist
-            throw new CouldNotSaveElementException(ex.getMessage());
+            throw new CouldNotModifyElementException(ex.getMessage());
         } catch (ElementAlreadyExistsException ex){
             //Element already belongs to list
             throw new CouldNotSaveElementException(ex.getMessage());
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
             //List does not exist
-            throw new CouldNotSaveElementException(ex.getMessage());
+            throw new CouldNotModifyElementException(ex.getMessage());
         } catch (ElementAlreadyExistsException ex){
             //Element already belongs to list
             throw new CouldNotSaveElementException(ex.getMessage());
@@ -150,12 +150,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotDeleteElementException {
+    public PlaceList deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotDeleteElementException {
         try {
             User user = getUser(userId);
             user.deletePlaceFromPlaceList(placeListName, placeId);
             userDao.save(user);
-            return user;
+            return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex){
             throw new CouldNotDeleteElementException(ex.getMessage());
         }
