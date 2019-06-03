@@ -190,7 +190,7 @@ public class UserControllerTest {
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
-        Assert.assertEquals(HttpStatus.SC_NOT_MODIFIED,httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
 
     public void testAddPlaceToUserPlace(String username, String placeListName, String placeId) throws IOException, JSONException {
@@ -221,7 +221,7 @@ public class UserControllerTest {
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
-        Assert.assertEquals(HttpStatus.SC_NOT_MODIFIED,httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
 
     }
 
@@ -374,7 +374,7 @@ public class UserControllerTest {
                 ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
-        Assert.assertEquals(HttpStatus.SC_NOT_MODIFIED,httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
 
     public void testModifyPlaceList(String userId,String placeListCurrentName, String placeListName) throws IOException, JSONException {

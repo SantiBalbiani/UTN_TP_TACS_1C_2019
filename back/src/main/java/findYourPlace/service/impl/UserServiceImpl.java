@@ -8,8 +8,6 @@ import findYourPlace.entity.exception.ElementDoesNotExistException;
 import findYourPlace.mongoDB.Model;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
-import findYourPlace.service.impl.exception.CouldNotDeleteElementException;
-import findYourPlace.service.impl.exception.CouldNotModifyElementException;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
 import findYourPlace.service.impl.exception.CouldNotSaveElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +45,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String userId) throws CouldNotDeleteElementException {
+    public void deleteUser(String userId) throws CouldNotRetrieveElementException {
         try{
             userDao.deleteById(userId);
         } catch (NoSuchElementException ex){
-            throw new CouldNotDeleteElementException(ex.getMessage());
+            throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
@@ -83,31 +81,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User deleteUserPlaces(String userId, String placeListName) throws CouldNotDeleteElementException {
+    public User deleteUserPlaces(String userId, String placeListName) throws CouldNotRetrieveElementException {
         try{
             User user = getUser(userId);
             user.removePlaceList(placeListName);
             userDao.save(user);
             return user;
         } catch (ElementDoesNotExistException ex){
-            throw new CouldNotDeleteElementException(ex.getMessage());
+            throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public PlaceList modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotModifyElementException {
+    public PlaceList modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotRetrieveElementException {
         try {
             User user = getUser(userId);
             user.modifyPlaceList(placeListCurrentName, placeListNewName);
             userDao.save(user);
             return user.findPlaceListByName(placeListNewName);
         } catch (ElementDoesNotExistException ex){
-            throw new CouldNotModifyElementException(ex.getMessage());
+            throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotModifyElementException{
+    public PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotRetrieveElementException{
         try {
             User user = getUser(userId);
             user.addPlaceToPlaceList(placeListName, place);
@@ -115,7 +113,7 @@ public class UserServiceImpl implements UserService {
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
             //List does not exist
-            throw new CouldNotModifyElementException(ex.getMessage());
+            throw new CouldNotRetrieveElementException(ex.getMessage());
         } catch (ElementAlreadyExistsException ex){
             //Element already belongs to list
             throw new CouldNotSaveElementException(ex.getMessage());
@@ -123,7 +121,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PlaceList addPlaceToPlaceList(String userId, String placeListName, String placeId) throws CouldNotModifyElementException{
+    public PlaceList addPlaceToPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException{
         try {
             User user = getUser(userId);
             Place place = new Place(placeId);
@@ -132,7 +130,7 @@ public class UserServiceImpl implements UserService {
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
             //List does not exist
-            throw new CouldNotModifyElementException(ex.getMessage());
+            throw new CouldNotRetrieveElementException(ex.getMessage());
         } catch (ElementAlreadyExistsException ex){
             //Element already belongs to list
             throw new CouldNotSaveElementException(ex.getMessage());
@@ -150,19 +148,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PlaceList deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotDeleteElementException {
+    public PlaceList deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException {
         try {
             User user = getUser(userId);
             user.deletePlaceFromPlaceList(placeListName, placeId);
             userDao.save(user);
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex){
-            throw new CouldNotDeleteElementException(ex.getMessage());
+            throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public Place markPlaceAsVisited(String userId, String placeListName, String placeId) {
+    public Place markPlaceAsVisited(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException {
         try {
             User user = getUser(userId);
             Place place = user.getPlaceFromPlaceList(placeListName, placeId);
@@ -170,7 +168,7 @@ public class UserServiceImpl implements UserService {
             userDao.save(user);
             return place;
         } catch (ElementDoesNotExistException ex){
-            throw new CouldNotModifyElementException(ex.getMessage());
+            throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 

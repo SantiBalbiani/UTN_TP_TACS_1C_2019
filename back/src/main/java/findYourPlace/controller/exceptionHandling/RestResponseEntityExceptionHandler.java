@@ -1,7 +1,5 @@
 package findYourPlace.controller.exceptionHandling;
 
-import findYourPlace.service.impl.exception.CouldNotDeleteElementException;
-import findYourPlace.service.impl.exception.CouldNotModifyElementException;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
 import findYourPlace.service.impl.exception.CouldNotSaveElementException;
 import org.springframework.http.HttpStatus;
@@ -18,16 +16,6 @@ public class RestResponseEntityExceptionHandler
     @ExceptionHandler({CouldNotSaveElementException.class})
     public ResponseEntity<Object> handleDuplicate(CouldNotSaveElementException ex) {
         return new ResponseEntity(HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler({CouldNotDeleteElementException.class})
-    public ResponseEntity<Object> handleDelete(CouldNotDeleteElementException ex) {
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({CouldNotModifyElementException.class})
-    public ResponseEntity<Object> handleModify(CouldNotModifyElementException ex) {
-        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
 
     @ExceptionHandler({CouldNotRetrieveElementException.class})
