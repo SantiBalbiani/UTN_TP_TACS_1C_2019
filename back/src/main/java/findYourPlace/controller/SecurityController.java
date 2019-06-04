@@ -6,17 +6,23 @@ import findYourPlace.entity.User;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.TokenService;
 import findYourPlace.utils.Encrypt;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.NoSuchAlgorithmException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -50,9 +56,10 @@ public class SecurityController {
     }
     
     
-    @PostMapping(value = "/prueba")
-    public String prueba(@RequestBody PruebaTokenRequest pruebaTokenRequest) {
-        return "El token pertenece al usuario: " + tokenService.getUsername(pruebaTokenRequest.getToken());
+    @RequestMapping(value = "/prueba",method = RequestMethod.GET)
+    public String prueba(@RequestHeader(value = "token") String request) {
+    	
+        return "El token pertenece al usuario: " + tokenService.getUsername(request);
     }
     
 
