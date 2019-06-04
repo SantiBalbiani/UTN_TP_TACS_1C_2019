@@ -9,7 +9,5 @@
 - Modificar archivo application.properties con los parámetros y ApiKeys de Telegram, FourSquare, Mongo y configuración general.
 - Acceder por línea de comando a carpeta donde se encuentra el archivo POM.xml: tp-tacs\back.
 - Parar correr la aplicación con tests es necesario tener levantando el servidor previamente, para lo cual, ejecutar comandos:
-	mvn clean install -Dmaven.test.skip=true
-	mvn spring-boot:run -Dmaven.test.skip=true
-	finalmente lanzar mismos comandos sin -Dmaven.test.skip=true
+	mvn clean install -Dmaven.test.skip=true y mvn spring-boot:run -Dmaven.test.skip=true. Finalmente lanzar mismos comandos sin -Dmaven.test.skip=true.
 	
