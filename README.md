@@ -8,14 +8,8 @@
 - Copiar src/main/resources/application.properties.dist a src/main/resources/application.properties.
 - Modificar archivo application.properties con los parámetros y ApiKeys de Telegram, FourSquare, Mongo y configuración general.
 - Acceder por línea de comando a carpeta donde se encuentra el archivo POM.xml: tp-tacs\back.
-- Finalmente para correr la aplicación, ejecutar comandos:
-	mvn clean install
-	mvn spring-boot:run
+- Parar correr la aplicación con tests es necesario tener levantando el servidor previamente, para lo cual, ejecutar comandos:
+	mvn clean install -Dmaven.test.skip=true
+	mvn spring-boot:run -Dmaven.test.skip=true
 	
 	
-Old
-- Importar el directorio con IntelliJ Idea `'/back'` 
-- Configurar el proyecto como Maven
-- Copiar `src/main/resources/application.properties.dist` a `src/main/resources/application.properties`
-- Modificar archivo `application.properties` con los parámetros y ApiKeys de Telegram, FourSquare, Mongo y configuración general.
-- Correr el proyecto (Puerto por defecto `'8080'`)
