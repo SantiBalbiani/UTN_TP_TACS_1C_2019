@@ -29,7 +29,8 @@ public class TokenServiceImpl implements TokenService {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         long nowMillis = System.currentTimeMillis();
-        Date now = new Date(nowMillis);
+        //Date now = new Date(nowMillis);
+        Date fecha = new Date(2000,01,01);
 
         //We will sign our JWT with our ApiKey secret
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
@@ -37,7 +38,7 @@ public class TokenServiceImpl implements TokenService {
 
 
         JwtBuilder builder = Jwts.builder()
-                .setIssuedAt(now)
+                .setIssuedAt(fecha)
                 .setSubject("user/" + user.getUsername())
                 .claim(USERNAME, user.getUsername())
                 .signWith(signatureAlgorithm, signingKey);

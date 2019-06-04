@@ -10,6 +10,8 @@ import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
 import findYourPlace.service.impl.exception.CouldNotSaveElementException;
+import findYourPlace.utils.Encrypt;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) throws CouldNotSaveElementException {
         try {
+        	user.setPassword(Encrypt.encrypt(user.getPassword()));
             return userDao.save(user);
         } catch (DuplicateKeyException ex){
             throw new CouldNotSaveElementException(ex.getMessage());
