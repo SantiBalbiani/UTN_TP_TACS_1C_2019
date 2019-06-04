@@ -12,4 +12,3 @@
 	mvn clean install -Dmaven.test.skip=true
 	mvn spring-boot:run -Dmaven.test.skip=true
 	
-	
