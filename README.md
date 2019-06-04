@@ -11,5 +11,5 @@
 - Parar correr la aplicación con tests es necesario tener levantando el servidor previamente, para lo cual, ejecutar comandos:
 	mvn clean install -Dmaven.test.skip=true
 	mvn spring-boot:run -Dmaven.test.skip=true
-	
+	finalmente lanzar mismos comandos sin -Dmaven.test.skip=true
 	
