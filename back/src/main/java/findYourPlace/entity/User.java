@@ -21,7 +21,7 @@ public class User {
     private String id;
     @Indexed(unique = true)
     private String username;
-    @JsonIgnore
+    
     private String password;
     private String role;
     private List<PlaceList> placeLists;
@@ -29,9 +29,11 @@ public class User {
     @PersistenceConstructor
     public User(
             @JsonProperty("username") String username,
-            @JsonProperty("role") String role){
-        this.username = username;
+            @JsonProperty("role") String role,
+            @JsonProperty("password") String password){
+    	this.username = username;
         this.role = role;
+        this.password = password;
         this.placeLists = new ArrayList<PlaceList>();
     }
 
@@ -52,7 +54,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = Encrypt.encrypt(password);
+        this.password = password;
     }
 
     public String getRole() {
