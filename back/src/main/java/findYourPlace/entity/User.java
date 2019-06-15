@@ -120,4 +120,39 @@ public class User {
         Place place = getPlaceFromPlaceList(placeListName,placeId);
         placeList.removePlace(place);
     }
+
+	public boolean gotThisPlace(int placeId) {
+        List<PlaceList> places = this.getPlaceLists();
+
+        for (int x=0; x==places.size(); x++) {
+            if (places.get(x).isPlaceIdPresent(placeId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int getPlaceListsCount() {
+        return this.placeLists.size();
+    }
+
+    public int getVisitedPlaceCount() {
+        List<PlaceList> places = this.getPlaceLists();
+        int count = 0;
+
+        for (int x=0; x==places.size(); x++) {
+
+            List<Place> oneList = places.get(x).getPlaces();
+
+            for (int y=0; y==oneList.size(); y++) {
+
+                if (oneList.get(y).isVisited()) {
+                    count++;
+                };
+
+            }
+        }
+
+        return count;
+    }
 }

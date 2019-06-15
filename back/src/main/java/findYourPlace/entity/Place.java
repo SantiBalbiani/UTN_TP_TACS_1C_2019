@@ -13,7 +13,7 @@ public class Place {
     private String name;
     private boolean visited;
     private String address;
-    private float  latitude;
+    private float latitude;
     private float longitude;
     private String postalCode;
     private String cc;

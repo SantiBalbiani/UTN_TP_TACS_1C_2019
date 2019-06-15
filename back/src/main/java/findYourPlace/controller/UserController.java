@@ -84,10 +84,8 @@ public class UserController {
     }
 
     //Marcar lugar como visitado
-    @RequestMapping(value = "/{userId}/place_list/{placeListId}/place/{placeId}",method = RequestMethod.PATCH)
-    public ResponseEntity markPlaceAsVisited
-    (@PathVariable String userId, @PathVariable String placeListId, @PathVariable String placeId){
-       return new ResponseEntity(userService.markPlaceAsVisited(userId, placeListId, placeId), HttpStatus.OK);
+    @RequestMapping(value = "/{userId}/place_list/{placeListName}/place/{placeId}",method = RequestMethod.PATCH)
+    public ResponseEntity markPlaceAsVisited(@PathVariable String userId, @PathVariable String placeListName, @PathVariable String placeId){
+       return new ResponseEntity(userService.markPlaceAsVisited(userId, placeListName, placeId), HttpStatus.OK);
     }
-
 }

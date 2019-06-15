@@ -5,8 +5,11 @@ import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 import findYourPlace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -43,8 +46,17 @@ public class AdminController {
     @RequestMapping("/place/{placeId}/interested")
     public HashMap<String, Integer> interestedUsers(@PathVariable int placeId) {
         HashMap<String, Integer> response = new HashMap<>();
+        
+        List<User> interestedUsers = null;
+        List<User> allUsers = userService.getUsers();
 
-        response.put("interestedUsers", 3);
+        for (int x = 0; x == allUsers.size(); x++) {
+            if (allUsers.get(x).gotThisPlace(placeId)) {
+                interestedUsers.add(allUsers.get(x));
+            }
+        }
+
+        response.put("interestedUsers", allUsers.size());
 
         return response;
     }
@@ -56,6 +68,12 @@ public class AdminController {
         response.put("totalRegisteredPlaces", 12312);
 
         return response;
+    }
+
+    //Visualizar un usuario
+    @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
+    public ResponseEntity getUser(@PathVariable String userId) {
+        return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
     }
 
 }

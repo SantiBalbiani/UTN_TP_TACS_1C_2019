@@ -163,7 +163,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Place markPlaceAsVisited(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException {
+    public Place markPlaceAsVisited(String userId, String placeListName, String placeId) 
+            throws CouldNotRetrieveElementException {
         try {
             User user = getUser(userId);
             Place place = user.getPlaceFromPlaceList(placeListName, placeId);
@@ -173,6 +174,11 @@ public class UserServiceImpl implements UserService {
         } catch (ElementDoesNotExistException ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return model.getUsers();
     }
 
 }
