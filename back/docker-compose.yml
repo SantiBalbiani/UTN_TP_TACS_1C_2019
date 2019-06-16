@@ -1,0 +1,24 @@
+version: "2"
+
+services:
+  springboot:
+    build:
+      context: .
+      dockerfile: Docker/springboot/Dockerfile
+    restart: "always"
+    image: "springboot_image"
+    container_name: "springboot_container"
+    ports:
+    - "8080:8080"
+    depends_on:
+    - "mongo"
+
+  mongo:
+    build:
+      context: .
+      dockerfile: Docker/mongo/Dockerfile
+    image: "mongodb_image"
+    container_name: "mongodb_container"
+    ports:
+    - "27017:27017"
+    restart: "always"
