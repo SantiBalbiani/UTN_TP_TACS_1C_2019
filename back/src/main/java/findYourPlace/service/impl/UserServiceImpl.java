@@ -199,7 +199,7 @@ public class UserServiceImpl implements UserService {
             for(User user:users){
                 for(PlaceList placeList:user.getPlaceLists()){
                     for(Place place:placeList.getPlaces()){
-                        if(place.getTimeStamp().after(dateBeforeDays)){
+                        if(place.getTimeStamp()!=null && place.getTimeStamp().after(dateBeforeDays)){
                             places.add(place);
                         }
                     }
