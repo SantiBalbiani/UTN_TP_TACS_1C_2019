@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -21,10 +22,12 @@ public class User {
     private String id;
     @Indexed(unique = true)
     private String username;
-    
+    @JsonIgnore
+    @JsonProperty( value = "password", access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String role;
     private List<PlaceList> placeLists;
+    private Date lastModified;
 
     @PersistenceConstructor
     public User(
@@ -35,7 +38,10 @@ public class User {
         this.role = role;
         this.password = password;
         this.placeLists = new ArrayList<PlaceList>();
+        this.lastModified = new Date();
     }
+
+    public User(){ this.lastModified = new Date();}
 
     public String getId() {
         return id;
@@ -108,6 +114,7 @@ public class User {
     public void addPlaceToPlaceList(String placeListName, Place place) throws ElementAlreadyExistsException {
         PlaceList placeList = findPlaceListByName(placeListName);
         placeList.addPlace(place);
+        lastModified = new Date();
     }
 
     public Place getPlaceFromPlaceList(String placeListName,String placeId) throws ElementDoesNotExistException {
@@ -140,11 +147,11 @@ public class User {
         List<PlaceList> places = this.getPlaceLists();
         int count = 0;
 
-        for (int x=0; x==places.size(); x++) {
+        for (int x=0; x<places.size(); x++) {
 
             List<Place> oneList = places.get(x).getPlaces();
 
-            for (int y=0; y==oneList.size(); y++) {
+            for (int y=0; y<oneList.size(); y++) {
 
                 if (oneList.get(y).isVisited()) {
                     count++;
@@ -155,4 +162,6 @@ public class User {
 
         return count;
     }
+
+    public Date getLastModified(){ return this.lastModified;}
 }

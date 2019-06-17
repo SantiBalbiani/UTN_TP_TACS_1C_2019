@@ -199,7 +199,7 @@ public class UserControllerTest {
 
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.CONNECTION, "Close");
-        request.setEntity(new StringEntity("{\"placeId\":\"" + placeId +"\"}",
+        request.setEntity(new StringEntity("{\"id\":\"" + placeId +"\"}",
                 ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
@@ -251,7 +251,7 @@ public class UserControllerTest {
 
         String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
-        String retrievedPlaceId = json.getString("placeId");
+        String retrievedPlaceId = json.getString("id");
         Assert.assertEquals(placeId,retrievedPlaceId);
     }
 
@@ -275,7 +275,10 @@ public class UserControllerTest {
 
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.CONNECTION, "Close");
-        request.setEntity(new StringEntity("{\"username\":\"" + username + "\",\"role\":\"" + role + "\"}",
+        request.setEntity(new StringEntity("{\"username\":\"" + username + "\"," +
+                "\"role\":\"" + role + "\"," +
+                "\"password\":\"passdsfd\""+
+                "}",
                 ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
@@ -292,7 +295,10 @@ public class UserControllerTest {
         HttpPost request = new HttpPost(url);
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.CONNECTION, "Close");
-        request.setEntity(new StringEntity("{\"username\":\"" + username + "\",\"role\":\"" + role + "\"}",
+        request.setEntity(new StringEntity("{\"username\":\"" + username + "\"," +
+                "\"role\":\"" + role + "\"," +
+                "\"password\":\"passdsfd\""+
+                "}",
                 ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);

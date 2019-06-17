@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("")
 public class AdminController {
 
     @Autowired
@@ -74,6 +75,12 @@ public class AdminController {
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public ResponseEntity getUser(@PathVariable String userId) {
         return new ResponseEntity(userService.getUser(userId), HttpStatus.OK);
+    }
+
+    //Visualizar lugares
+    @RequestMapping(value = "/lugares_registrados_hoy",method = RequestMethod.GET)
+    public ResponseEntity getRegisteredPlacesToday() {
+        return new ResponseEntity(userService.getLugaresRegistradosHoy(), HttpStatus.OK);
     }
 
 }

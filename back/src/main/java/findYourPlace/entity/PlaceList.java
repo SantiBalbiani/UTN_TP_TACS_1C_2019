@@ -40,7 +40,7 @@ public class PlaceList {
 
     public Place getPlaceByPlaceId(String id) throws ElementDoesNotExistException {
         for(Place place:places){
-            if(place.getPlaceId().equals(id)){
+            if(place.getId().equals(id)){
                 return place;
             }
         }
@@ -49,8 +49,8 @@ public class PlaceList {
 
     public void validatePlace(Place _place) throws ElementAlreadyExistsException {
         for(Place place:places){
-            if(place.getPlaceId().equals(_place.getPlaceId())){
-                throw new ElementAlreadyExistsException("Place with id "+_place.getPlaceId()+" already belongs to list "+getName());
+            if(place.getId().equals(_place.getId())){
+                throw new ElementAlreadyExistsException("Place with id "+_place.getId()+" already belongs to list "+getName());
             }
         }
     }
@@ -60,9 +60,9 @@ public class PlaceList {
         places.add(place);
     }
 
-    public void removePlace(long id) {
+    public void removePlace(String id) {
         for (int x= 0 ; x < this.places.size() ; x++) {
-            if (this.places.get(x).getId() == id) {
+            if (this.places.get(x).getId().equals(id)) {
                 this.places.remove(this.places.get(x));
             }
         }
@@ -88,11 +88,11 @@ public class PlaceList {
     }
 
     public boolean isPlacePresent(Place place) {
-        return places.stream().anyMatch(aPlace -> aPlace.getPlaceId().equals(place.getPlaceId()));
+        return places.stream().anyMatch(aPlace -> aPlace.getId().equals(place.getId()));
     }
 
     public boolean isPlaceIdPresent(int placeId) {
-        return places.stream().anyMatch(aPlace -> aPlace.getPlaceId().equals(placeId));
+        return places.stream().anyMatch(aPlace -> aPlace.getId().equals(placeId));
     }
 
     public Boolean markVisitedPlace(Place place) {

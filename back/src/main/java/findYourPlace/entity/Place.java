@@ -3,13 +3,13 @@ package findYourPlace.entity;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import findYourPlace.utils.PlaceDeserializer;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 @JsonDeserialize(using = PlaceDeserializer.class)
 public class Place {
 
-    private long id;
-    private String placeId;
+    private String id;
     private String name;
     private boolean visited;
     private String address;
@@ -20,6 +20,7 @@ public class Place {
     private String city;
     private String state;
     private String country;
+    private Date timeStamp;
 
     static private final AtomicLong counter = new AtomicLong();
 
@@ -39,37 +40,16 @@ public class Place {
     }
 
     public Place(String name) {
-        this.id = counter.incrementAndGet();
-        this.name = name;
-    }
-
-    public Place(String name, long id) {
-        this.id = id;
         this.name = name;
     }
 
     public Place(String placeId, String name) {
-        this.id = counter.incrementAndGet();
-        this.placeId = placeId;
+        this.id = placeId;
         this.name = name;
-    }
-
-    public Place(String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
-        this.id = counter.incrementAndGet();
-        this.name = name;
-        this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.postalCode = postalCode;
-        this.cc = cc;
-        this.city = city;
-        this.state = state;
-        this.country = country;
     }
 
     public Place(String placeId, String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
-        this.id = counter.incrementAndGet();
-        this.placeId = placeId;
+        this.id = placeId;
         this.name = name;
         this.address = address;
         this.latitude = latitude;
@@ -79,20 +59,17 @@ public class Place {
         this.city = city;
         this.state = state;
         this.country = country;
+        this.timeStamp = new Date();
     }
 
     public Place(){}
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public String getPlaceId() {
-        return placeId;
-    }
-
     public void setPlaceId(String placeId) {
-        this.placeId = placeId;
+        this.id = placeId;
     }
 
     public String getName() {
@@ -167,8 +144,10 @@ public class Place {
         this.country = country;
     }
 
+    public Date getTimeStamp() {return timeStamp;}
+
     @Override
     public String toString() {
-        return id + " - " + placeId + " - " + name + " (" + address + ") ";
+        return id + " - " + name + " (" + address + ") ";
     }
 }

@@ -36,5 +36,7 @@ public interface UserService {
 
     Place markPlaceAsVisited(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException;
 
-	List<User> getUsers();
+	List<User> getUsers() throws CouldNotRetrieveElementException;
+
+    List<Place> getLugaresRegistradosHoy() throws CouldNotRetrieveElementException ;
 }

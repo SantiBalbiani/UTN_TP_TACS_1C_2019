@@ -5,7 +5,6 @@ import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
 import findYourPlace.entity.exception.ElementAlreadyExistsException;
 import findYourPlace.entity.exception.ElementDoesNotExistException;
-import findYourPlace.mongoDB.Model;
 import findYourPlace.mongoDB.UserDao;
 import findYourPlace.service.UserService;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
@@ -14,16 +13,19 @@ import findYourPlace.utils.Encrypt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static Model model = Model.getModel();
     @Autowired
     private UserDao userDao;
 
@@ -177,8 +179,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers() {
-        return model.getUsers();
+    public List<User> getUsers() throws CouldNotRetrieveElementException {
+        try {
+            List<User> users = userDao.findAll();
+            return users;
+        } catch (Exception e){
+            throw new CouldNotRetrieveElementException(e.getMessage());
+        }
     }
+
+    @Override
+    public List<Place> getLugaresRegistradosHoy() throws CouldNotRetrieveElementException {
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -1);
+            Date dateBeforeDays = cal.getTime();
+            List<User> users = userDao.findByLastModifiedGreaterThan(dateBeforeDays);
+            List<Place> places = new ArrayList<Place>();
+            for(User user:users){
+                for(PlaceList placeList:user.getPlaceLists()){
+                    for(Place place:placeList.getPlaces()){
+                        if(place.getTimeStamp().after(dateBeforeDays)){
+                            places.add(place);
+                        }
+                    }
+                }
+            }
+            return places;
+        } catch (Exception e) {
+            throw new CouldNotRetrieveElementException(e.getMessage());
+        }
+    }
+
 
 }
