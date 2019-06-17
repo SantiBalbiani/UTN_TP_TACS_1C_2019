@@ -27,7 +27,7 @@ public class User {
     private String password;
     private String role;
     private List<PlaceList> placeLists;
-    private Date lastModified;
+
 
     @PersistenceConstructor
     public User(
@@ -38,10 +38,7 @@ public class User {
         this.role = role;
         this.password = password;
         this.placeLists = new ArrayList<PlaceList>();
-        this.lastModified = new Date();
     }
-
-    public User(){ this.lastModified = new Date();}
 
     public String getId() {
         return id;
@@ -114,7 +111,6 @@ public class User {
     public void addPlaceToPlaceList(String placeListName, Place place) throws ElementAlreadyExistsException {
         PlaceList placeList = findPlaceListByName(placeListName);
         placeList.addPlace(place);
-        lastModified = new Date();
     }
 
     public Place getPlaceFromPlaceList(String placeListName,String placeId) throws ElementDoesNotExistException {
@@ -163,5 +159,4 @@ public class User {
         return count;
     }
 
-    public Date getLastModified(){ return this.lastModified;}
 }

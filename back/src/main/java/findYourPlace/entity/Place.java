@@ -2,14 +2,22 @@ package findYourPlace.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import findYourPlace.utils.PlaceDeserializer;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 @JsonDeserialize(using = PlaceDeserializer.class)
+@Document
 public class Place {
 
+    @Id
     private String id;
+    private String fortsquareId;
+    private String userId;
+    private String listName;
     private String name;
     private boolean visited;
     private String address;
@@ -20,9 +28,7 @@ public class Place {
     private String city;
     private String state;
     private String country;
-    private Date timeStamp;
-
-    static private final AtomicLong counter = new AtomicLong();
+    private Date addedAt;
 
     /**
      * @return the visited
@@ -44,12 +50,13 @@ public class Place {
     }
 
     public Place(String placeId, String name) {
-        this.id = placeId;
+        this.fortsquareId = placeId;
         this.name = name;
     }
 
-    public Place(String placeId, String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
-        this.id = placeId;
+    @PersistenceConstructor
+    public Place(String fortsquareId, String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
+        this.fortsquareId = fortsquareId;
         this.name = name;
         this.address = address;
         this.latitude = latitude;
@@ -59,17 +66,17 @@ public class Place {
         this.city = city;
         this.state = state;
         this.country = country;
-        this.timeStamp = new Date();
+        this.addedAt = new Date();
     }
 
     public Place(){}
 
-    public String getId() {
-        return id;
+    public String getFortsquareId() {
+        return fortsquareId;
     }
 
-    public void setPlaceId(String placeId) {
-        this.id = placeId;
+    public void setFortsquareId(String placeId) {
+        this.fortsquareId = placeId;
     }
 
     public String getName() {
@@ -144,10 +151,24 @@ public class Place {
         this.country = country;
     }
 
-    public Date getTimeStamp() {return timeStamp;}
+    public Date getAddedAt() {return addedAt;}
+
+    public boolean getVisited() {return visited;}
+
+    public String getUserId() { return userId; }
+
+    public void setUserId(String userId) {this.userId = userId; }
+
+    public String getListName() { return listName; }
+
+    public void setListName(String listName) { this.listName = listName; }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
 
     @Override
     public String toString() {
-        return id + " - " + name + " (" + address + ") ";
+        return fortsquareId + " - " + name + " (" + address + ") ";
     }
 }

@@ -14,6 +14,5 @@ import findYourPlace.entity.User;
 public interface UserDao extends MongoRepository<User, String> {
 	
 	User findByUsername(String username);
-	List<User> findByLastModifiedGreaterThan(Date date);
-	
+
 }

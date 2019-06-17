@@ -38,5 +38,4 @@ public interface UserService {
 
 	List<User> getUsers() throws CouldNotRetrieveElementException;
 
-    List<Place> getLugaresRegistradosHoy() throws CouldNotRetrieveElementException ;
 }

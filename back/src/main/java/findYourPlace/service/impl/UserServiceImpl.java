@@ -6,6 +6,7 @@ import findYourPlace.entity.User;
 import findYourPlace.entity.exception.ElementAlreadyExistsException;
 import findYourPlace.entity.exception.ElementDoesNotExistException;
 import findYourPlace.mongoDB.UserDao;
+import findYourPlace.service.PlaceService;
 import findYourPlace.service.UserService;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
 import findYourPlace.service.impl.exception.CouldNotSaveElementException;
@@ -13,21 +14,20 @@ import findYourPlace.utils.Encrypt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PlaceService placeService;
+
 
     @Override
     public User createUser(User user) throws CouldNotSaveElementException {
@@ -113,8 +113,16 @@ public class UserServiceImpl implements UserService {
     public PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotRetrieveElementException{
         try {
             User user = getUser(userId);
+
+            //save place as independent object
+            place.setUserId(user.getId());
+            place.setListName(placeListName);
+            placeService.save(place);
+
+            //save place as subordinated object in user/placeList
             user.addPlaceToPlaceList(placeListName, place);
             userDao.save(user);
+
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
             //List does not exist
@@ -130,8 +138,16 @@ public class UserServiceImpl implements UserService {
         try {
             User user = getUser(userId);
             Place place = new Place(placeId);
+
+            //save place as independent object
+            place.setUserId(user.getId());
+            place.setListName(placeListName);
+            placeService.save(place);
+
+            //save place as subordinated object in user/placeList
             user.addPlaceToPlaceList(placeListName, place);
             userDao.save(user);
+
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
             //List does not exist
@@ -158,6 +174,7 @@ public class UserServiceImpl implements UserService {
             User user = getUser(userId);
             user.deletePlaceFromPlaceList(placeListName, placeId);
             userDao.save(user);
+            placeService.deleteById(placeId);
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
@@ -172,6 +189,7 @@ public class UserServiceImpl implements UserService {
             Place place = user.getPlaceFromPlaceList(placeListName, placeId);
             place.setVisited(true);
             userDao.save(user);
+            placeService.updatePlace(place);
             return place;
         } catch (ElementDoesNotExistException ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
@@ -187,29 +205,5 @@ public class UserServiceImpl implements UserService {
             throw new CouldNotRetrieveElementException(e.getMessage());
         }
     }
-
-    @Override
-    public List<Place> getLugaresRegistradosHoy() throws CouldNotRetrieveElementException {
-        try {
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
-            Date dateBeforeDays = cal.getTime();
-            List<User> users = userDao.findByLastModifiedGreaterThan(dateBeforeDays);
-            List<Place> places = new ArrayList<Place>();
-            for(User user:users){
-                for(PlaceList placeList:user.getPlaceLists()){
-                    for(Place place:placeList.getPlaces()){
-                        if(place.getTimeStamp()!=null && place.getTimeStamp().after(dateBeforeDays)){
-                            places.add(place);
-                        }
-                    }
-                }
-            }
-            return places;
-        } catch (Exception e) {
-            throw new CouldNotRetrieveElementException(e.getMessage());
-        }
-    }
-
 
 }

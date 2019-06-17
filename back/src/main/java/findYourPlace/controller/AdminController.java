@@ -3,6 +3,7 @@ package findYourPlace.controller;
 import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
+import findYourPlace.service.PlaceService;
 import findYourPlace.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PlaceService placeService;
 
     @RequestMapping("/list_comparator/{userId}/{userListPlaceIndex}/{userId2}/{userListPlaceIndex2}")
     public HashMap<String, List<Place>> listComparator(@PathVariable String userId, @PathVariable int userListPlaceIndex,
@@ -78,9 +82,15 @@ public class AdminController {
     }
 
     //Visualizar lugares
-    @RequestMapping(value = "/lugares_registrados_hoy",method = RequestMethod.GET)
-    public ResponseEntity getRegisteredPlacesToday() {
-        return new ResponseEntity(userService.getLugaresRegistradosHoy(), HttpStatus.OK);
+    @RequestMapping(value = "/places_registered_days_ago/{days_ago}",method = RequestMethod.GET)
+    public ResponseEntity getPlacesRegisteredAtDaysAgo(@PathVariable Integer days_ago) {
+        return new ResponseEntity(placeService.getPlacesRegisteredAtDaysAgo(days_ago), HttpStatus.OK);
+    }
+
+    //Visualizar lugares
+    @RequestMapping(value = "/places_registered_since_begining_of_time",method = RequestMethod.GET)
+    public ResponseEntity getPlacesRegisteredAtDaysAgo() {
+        return new ResponseEntity(placeService.getPlacesRegisteredSinceBeginingOfTime(), HttpStatus.OK);
     }
 
 }
