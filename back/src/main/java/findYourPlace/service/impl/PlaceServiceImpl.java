@@ -55,7 +55,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public Place updatePlace(Place place) throws CouldNotRetrieveElementException{
         try {
-            Place placeBD = placeDao.findById(place.getFortsquareId()).get();
+            Place placeBD = placeDao.findByFortsquareIdAndUserIdAndListName(place.getFortsquareId(),place.getUserId(),place.getListName());
             placeBD.setVisited(place.getVisited());
             placeDao.save(placeBD);
             return placeBD;
@@ -65,9 +65,9 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public void deleteById(String id) throws CouldNotRetrieveElementException{
+    public void deleteByComposedIndex(String fortsquareId,String userId,String listName) throws CouldNotRetrieveElementException{
         try {
-            Place place = placeDao.findById(id).get();
+            Place place = placeDao.findByFortsquareIdAndUserIdAndListName(fortsquareId,userId,listName);
             placeDao.delete(place);
         } catch (NoSuchElementException ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());

@@ -14,6 +14,6 @@ public interface PlaceService {
     List<Place> getPlacesRegisteredSinceBeginingOfTime() throws CouldNotRetrieveElementException;
     Place findById(String id) throws CouldNotRetrieveElementException;
     Place updatePlace(Place place) throws CouldNotRetrieveElementException;
-    void deleteById(String id) throws CouldNotRetrieveElementException;
+    void deleteByComposedIndex(String fortsquareId,String userId,String listName) throws CouldNotRetrieveElementException;
     Place save(Place place) throws CouldNotSaveElementException;
 }

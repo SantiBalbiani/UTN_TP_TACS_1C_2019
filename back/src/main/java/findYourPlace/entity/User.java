@@ -7,13 +7,13 @@ import findYourPlace.entity.exception.ElementDoesNotExistException;
 import findYourPlace.utils.Encrypt;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 
 @Document
 public class User {
@@ -22,8 +22,6 @@ public class User {
     private String id;
     @Indexed(unique = true)
     private String username;
-    @JsonIgnore
-    @JsonProperty( value = "password", access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String role;
     private List<PlaceList> placeLists;

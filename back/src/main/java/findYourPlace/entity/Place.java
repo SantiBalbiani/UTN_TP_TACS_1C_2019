@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import findYourPlace.utils.PlaceDeserializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 @JsonDeserialize(using = PlaceDeserializer.class)
+
+//@CompoundIndex(def = "{'fortsquareId':1, 'userId':1, 'listName':1}", name = "compound_index_1", unique=true)
 @Document
 public class Place {
 

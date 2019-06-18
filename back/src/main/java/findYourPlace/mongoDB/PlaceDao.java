@@ -11,5 +11,6 @@ import java.util.List;
 public interface PlaceDao extends MongoRepository<Place, String> {
 	
 	List<Place> findByAddedAtGreaterThan(Date date);
+	Place findByFortsquareIdAndUserIdAndListName(String fortsquareId, String userId, String listName);
 	
 }

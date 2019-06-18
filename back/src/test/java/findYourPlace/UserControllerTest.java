@@ -251,7 +251,7 @@ public class UserControllerTest {
 
         String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
-        String retrievedPlaceId = json.getString("id");
+        String retrievedPlaceId = json.getString("fortsquareId");
         Assert.assertEquals(placeId,retrievedPlaceId);
     }
 

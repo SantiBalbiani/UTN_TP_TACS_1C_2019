@@ -113,15 +113,15 @@ public class UserServiceImpl implements UserService {
     public PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotRetrieveElementException{
         try {
             User user = getUser(userId);
-
-            //save place as independent object
             place.setUserId(user.getId());
             place.setListName(placeListName);
-            placeService.save(place);
 
             //save place as subordinated object in user/placeList
             user.addPlaceToPlaceList(placeListName, place);
             userDao.save(user);
+
+            //save place as independent object
+            placeService.save(place);
 
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
@@ -138,15 +138,15 @@ public class UserServiceImpl implements UserService {
         try {
             User user = getUser(userId);
             Place place = new Place(placeId);
-
-            //save place as independent object
             place.setUserId(user.getId());
             place.setListName(placeListName);
-            placeService.save(place);
 
             //save place as subordinated object in user/placeList
             user.addPlaceToPlaceList(placeListName, place);
             userDao.save(user);
+
+            //save place as independent object
+            placeService.save(place);
 
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex) {
@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
             User user = getUser(userId);
             user.deletePlaceFromPlaceList(placeListName, placeId);
             userDao.save(user);
-            placeService.deleteById(placeId);
+            placeService.deleteByComposedIndex(placeId,userId,placeListName);
             return user.findPlaceListByName(placeListName);
         } catch (ElementDoesNotExistException ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
