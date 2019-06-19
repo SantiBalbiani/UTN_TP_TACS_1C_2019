@@ -3,11 +3,9 @@
 ## BackEnd
 
 
-- Es necesario descargar e instalar un cliente MongoDB para la base de datos.
+- Descargar e instalar Docker.
 - Importar el proyecto en carpeta de preferencia con comando git clone + URL del repositorio.
-- Copiar src/main/resources/application.properties.dist a src/main/resources/application.properties.
+- Renombrar src/main/resources/application.properties.dist a src/main/resources/application.properties.
 - Modificar archivo application.properties con los parámetros y ApiKeys de Telegram, FourSquare, Mongo y configuración general.
 - Acceder por línea de comando a carpeta donde se encuentra el archivo POM.xml: tp-tacs\back.
-- Parar correr la aplicación con tests es necesario tener levantando el servidor previamente, para lo cual, ejecutar comandos:
-	mvn clean install -Dmaven.test.skip=true y mvn spring-boot:run -Dmaven.test.skip=true. Finalmente lanzar mismos comandos sin -Dmaven.test.skip=true.
-	
+- Correr la aplicación con comando docker-compose up. Es necesario tener libres los puertos 8080 y 27017.
