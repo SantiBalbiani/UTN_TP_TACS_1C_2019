@@ -9,3 +9,9 @@
 - Modificar archivo application.properties con los parámetros y ApiKeys de Telegram, FourSquare, Mongo y configuración general.
 - Acceder por línea de comando a carpeta donde se encuentra el archivo POM.xml: tp-tacs\back.
 - Correr la aplicación con comando docker-compose up. Es necesario tener libres los puertos 8080 y 27017.
+
+Nota: 
+  Se lanzan 3 contenedores:
+    - Mongo.
+    - La api en sí, sin tests.
+    - Los tests de integración de la api impactando contra el contenedor anterior.
