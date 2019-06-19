@@ -1,6 +1,17 @@
 version: "2"
 
 services:
+  springboot-test:
+    build:
+      context: .
+      dockerfile: Docker/springboot-test/Dockerfile
+    image: "springboot-test_image"
+    container_name: "springboot-test_container"
+    links:
+    - "springboot"
+    depends_on:
+    - "springboot"
+
   springboot:
     build:
       context: .
@@ -10,6 +21,8 @@ services:
     container_name: "springboot_container"
     ports:
     - "8080:8080"
+    expose:
+    - "8080"
     depends_on:
     - "mongo"
 

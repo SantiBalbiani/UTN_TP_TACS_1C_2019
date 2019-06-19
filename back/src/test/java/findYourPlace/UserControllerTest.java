@@ -23,7 +23,7 @@ import java.io.IOException;
 public class UserControllerTest {
 
     private String serverPort="8080";
-    private String serverAddress = "http://localhost";
+    private String serverAddress = "http://springboot";
     private String getApiUrl() {
         return serverAddress + ":" + serverPort + "/user";
     }

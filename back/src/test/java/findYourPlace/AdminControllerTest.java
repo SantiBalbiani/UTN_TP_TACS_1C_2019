@@ -28,12 +28,12 @@ public class AdminControllerTest {
     @Value("${server.port}")
     private String serverPort;
 
-    private String serverAddress = "http://localhost";
+    private String serverAddress = "http://springboot";
 
     private String getApiUrl() {
         return serverAddress + ":" + 8080 + "/";
     }
-
+/*
     @Test
     public void testListComparator() throws IOException, JSONException {
         int listId1 = 1;
@@ -56,7 +56,7 @@ public class AdminControllerTest {
 
         Assert.assertThat(commonPlaces, instanceOf(JSONArray.class));
     }
-
+*/
     @Test
     public void testInterestedUsers() throws IOException, JSONException {
         int placeId = 1;
