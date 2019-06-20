@@ -7,8 +7,6 @@ services:
       dockerfile: Docker/springboot-test/Dockerfile
     image: "springboot-test_image"
     container_name: "springboot-test_container"
-    links:
-    - "springboot"
     depends_on:
     - "springboot"
 
@@ -21,8 +19,6 @@ services:
     container_name: "springboot_container"
     ports:
     - "8080:8080"
-    expose:
-    - "8080"
     depends_on:
     - "mongo"
 
@@ -34,4 +30,6 @@ services:
     container_name: "mongodb_container"
     ports:
     - "27017:27017"
+    volumes:
+    - './data:/data/db'
     restart: "always"
