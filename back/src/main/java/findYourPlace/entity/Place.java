@@ -43,7 +43,7 @@ public class Place {
         this.id = counter.incrementAndGet();
         this.name = name;
     }
-    
+
     public Place(String name, long id) {
         this.id = id;
         this.name = name;

@@ -70,13 +70,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
         String description = parameters[1];
-        List<Place> places = fourSquareService.searchPlaces(description);
+        List<?> places = fourSquareService.searchPlaces(description);
+
+
 
         String responseText = "";
+        /*
         for (Place place: places) {
             responseText += place.toString() + "\n";
         }
 
+        */
         return responseText;
     }
 

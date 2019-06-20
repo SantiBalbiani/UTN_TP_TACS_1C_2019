@@ -13,7 +13,6 @@ import java.util.NoSuchElementException;
 public class RestResponseEntityExceptionHandler
         extends ResponseEntityExceptionHandler {
 
-
     @ExceptionHandler({DuplicateKeyException.class})
     public ResponseEntity<Object> handleDuplicate(DuplicateKeyException ex) {
         return new ResponseEntity(HttpStatus.CONFLICT);
@@ -23,4 +22,5 @@ public class RestResponseEntityExceptionHandler
     public ResponseEntity<Object> handleNotFound(NoSuchElementException ex) {
         return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
+
 }
