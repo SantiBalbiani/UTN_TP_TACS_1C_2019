@@ -66,15 +66,6 @@ public class AdminController {
         return response;
     }
 
-    @RequestMapping("/dashboard/place")
-    public HashMap<String, Integer> totalRegisteredPlaces() {
-        HashMap<String, Integer> response = new HashMap<>();
-
-        response.put("totalRegisteredPlaces", 12312);
-
-        return response;
-    }
-
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public ResponseEntity getUser(@PathVariable String userId) {

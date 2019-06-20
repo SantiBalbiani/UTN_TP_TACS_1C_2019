@@ -172,6 +172,6 @@ public class Place {
 
     @Override
     public String toString() {
-        return fortsquareId + " - " + name + " (" + address + ") ";
+        return "**" +fortsquareId + "** - " + name + (address != null ? " (" + address + ") " : "");
     }
 }

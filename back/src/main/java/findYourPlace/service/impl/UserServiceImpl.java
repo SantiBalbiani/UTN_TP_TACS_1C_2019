@@ -50,6 +50,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByUsername(String username) throws CouldNotRetrieveElementException {
+        try {
+            return userDao.findByUsername(username);
+        } catch (NoSuchElementException ex){
+            throw new CouldNotRetrieveElementException(ex.getMessage());
+        }
+    }
+
+    @Override
     public void deleteUser(String userId) throws CouldNotRetrieveElementException {
         try{
             userDao.deleteById(userId);
