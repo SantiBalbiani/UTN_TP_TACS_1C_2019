@@ -3,7 +3,6 @@ foursquare.client-secret=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 telegram.username=XXXXXXXXXXX
 telegram.token=XXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXX
 
-
 #Local MongoDB config
 spring.data.mongodb.authentication-database=admin
 #spring.data.mongodb.username=

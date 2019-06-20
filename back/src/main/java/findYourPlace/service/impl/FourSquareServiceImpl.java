@@ -1,12 +1,6 @@
 package findYourPlace.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-
 import findYourPlace.entity.Place;
-import findYourPlace.mongoDB.Model;
 import findYourPlace.service.FourSquareService;
 import findYourPlace.utils.PlacesResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @Service
 public class FourSquareServiceImpl implements FourSquareService {
-
-    private static Model model = Model.getModel();
 
     @Value("${foursquare.client-id}")
     private String clientid;

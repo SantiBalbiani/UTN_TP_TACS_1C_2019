@@ -1,20 +1,19 @@
 package findYourPlace.entity;
 
-import findYourPlace.utils.Encrypt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.dao.DuplicateKeyException;
+import findYourPlace.entity.exception.ElementAlreadyExistsException;
+import findYourPlace.entity.exception.ElementDoesNotExistException;
+import findYourPlace.utils.Encrypt;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicLong;
-
-import static findYourPlace.utils.Encrypt.salt;
 
 @Document
 public class User {
@@ -23,17 +22,19 @@ public class User {
     private String id;
     @Indexed(unique = true)
     private String username;
-    @JsonIgnore
     private String password;
     private String role;
     private List<PlaceList> placeLists;
 
+
     @PersistenceConstructor
     public User(
             @JsonProperty("username") String username,
-            @JsonProperty("role") String role){
-        this.username = username;
+            @JsonProperty("role") String role,
+            @JsonProperty("password") String password){
+    	this.username = username;
         this.role = role;
+        this.password = password;
         this.placeLists = new ArrayList<PlaceList>();
     }
 
@@ -54,7 +55,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = Encrypt.get_SHA_256_SecurePassword(password, salt);
+        this.password = password;
     }
 
     public String getRole() {
@@ -73,41 +74,87 @@ public class User {
         this.placeLists = placeLists;
     }
 
-    private PlaceList findPlaceListByNameNE(String placeListName) {
+    public PlaceList findPlaceListByName(String placeListName) throws ElementDoesNotExistException {
         for (PlaceList placelist:this.placeLists) {
             if(placeListName.equals(placelist.getName())) {
                 return placelist;
             }
         }
-        return null;
+        throw new ElementDoesNotExistException("Place "+placeListName+" does not exist");
     }
 
-    public PlaceList findPlaceListByName(String placeListName) throws NoSuchElementException {
-        PlaceList placeList = findPlaceListByNameNE(placeListName);
-        if(placeList!=null)
-            return placeList;
-        else
-            throw new NoSuchElementException();
+    private void validatePlaceListName(String placeListName) throws ElementAlreadyExistsException {
+        for (PlaceList placelist:this.placeLists) {
+            if(placeListName.equals(placelist.getName())) {
+                throw new ElementAlreadyExistsException("There's already a list named "+placelist.getName());
+            }
+        }
     }
 
-    public void createPlaceList(PlaceList placeList) throws DuplicateKeyException {
-        PlaceList placeListWithName = findPlaceListByNameNE(placeList.getName());
-        if (placeListWithName==null)
-            this.placeLists.add(placeList);
-        else
-            throw new DuplicateKeyException("");
+    public void createPlaceList(PlaceList placeList) throws ElementAlreadyExistsException {
+        validatePlaceListName(placeList.getName());
+        this.placeLists.add(placeList);
     }
 
-    public void modifyPlaceList(String placeListCurrentName,String placeListName) throws NoSuchElementException{
+    public void modifyPlaceList(String placeListCurrentName,String placeListName) throws ElementDoesNotExistException {
         PlaceList placeList = findPlaceListByName(placeListCurrentName);
         placeList.setName(placeListName);
     }
 
-    public boolean removePlaceList(String placeListName) throws NoSuchElementException {
+    public void removePlaceList(String placeListName) throws ElementDoesNotExistException {
         PlaceList placeList = findPlaceListByName(placeListName);
         this.placeLists.remove(placeList);
-        return true;
     }
 
+    public void addPlaceToPlaceList(String placeListName, Place place) throws ElementAlreadyExistsException {
+        PlaceList placeList = findPlaceListByName(placeListName);
+        placeList.addPlace(place);
+    }
+
+    public Place getPlaceFromPlaceList(String placeListName,String placeId) throws ElementDoesNotExistException {
+        PlaceList placeList = findPlaceListByName(placeListName);
+        return placeList.getPlaceByPlaceId(placeId);
+    }
+
+    public void deletePlaceFromPlaceList(String placeListName,String placeId) throws ElementDoesNotExistException {
+        PlaceList placeList = findPlaceListByName(placeListName);
+        Place place = getPlaceFromPlaceList(placeListName,placeId);
+        placeList.removePlace(place);
+    }
+
+	public boolean gotThisPlace(int placeId) {
+        List<PlaceList> places = this.getPlaceLists();
+
+        for (int x=0; x==places.size(); x++) {
+            if (places.get(x).isPlaceIdPresent(placeId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int getPlaceListsCount() {
+        return this.placeLists.size();
+    }
+
+    public int getVisitedPlaceCount() {
+        List<PlaceList> places = this.getPlaceLists();
+        int count = 0;
+
+        for (int x=0; x<places.size(); x++) {
+
+            List<Place> oneList = places.get(x).getPlaces();
+
+            for (int y=0; y<oneList.size(); y++) {
+
+                if (oneList.get(y).isVisited()) {
+                    count++;
+                };
+
+            }
+        }
+
+        return count;
+    }
 
 }

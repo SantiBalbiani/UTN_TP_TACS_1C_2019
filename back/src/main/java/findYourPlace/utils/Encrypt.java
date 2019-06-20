@@ -1,49 +1,45 @@
 package findYourPlace.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+
  
 public class Encrypt {
-    
-    public static final byte[] salt = getSalt();
 
-    public static String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt)
-    {
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+ 
+    public static String encrypt(String str) {
+    	
+    	byte[] salt = "tp".getBytes(StandardCharsets.UTF_8);
+    
+        MessageDigest md;
+        try
+        {
+            md = MessageDigest.getInstance("SHA-256");
+            
             md.update(salt);
-            byte[] bytes = md.digest(passwordToHash.getBytes());
+
+            byte[] hashedPassword = md.digest(str.getBytes(StandardCharsets.UTF_8));
+
             StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++)
-            {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            generatedPassword = sb.toString();
-        }
-        catch (NoSuchAlgorithmException e)
+            for (byte b : hashedPassword)
+                sb.append(String.format("%02x", b));
+
+            return(sb.toString());
+            
+        } catch (NoSuchAlgorithmException e)
         {
             e.printStackTrace();
         }
-        return generatedPassword;
-    }
+        
+		return null;
     
-    public static boolean checkPsw(String pass, String securedPass, byte[] salt) throws NoSuchAlgorithmException{
-      
-        return ((get_SHA_256_SecurePassword(pass, salt)).equals(securedPass));
+    	
     }
 
-    public static byte[] getSalt() // throws NoSuchAlgorithmException
+    public static Boolean checkPsw(String givenPass, String encryptedExpectedPass)
     {
-        SecureRandom sr = null;
-        byte[] salt = new byte[16];
-        try {
-            sr = SecureRandom.getInstance("SHA1PRNG");
-            sr.nextBytes(salt);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return salt;
+    	return encrypt(givenPass).equals(encryptedExpectedPass);
     }
+    
 }

@@ -1,19 +1,14 @@
 package findYourPlace.controller;
 
+import findYourPlace.entity.Place;
 import findYourPlace.entity.PlaceList;
 import findYourPlace.entity.User;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import findYourPlace.service.UserService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import findYourPlace.entity.Place;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -40,17 +35,16 @@ public class UserController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    //Agregar una nueva lista de lugares al usuario
+    @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.POST)
+    public ResponseEntity createPlaceList(@PathVariable String userId, @RequestBody PlaceList placeList) {
+        return new ResponseEntity(userService.createUserPlaces(userId, placeList), HttpStatus.OK);
+    }
 
     //Visualizar lista de listas de lugares del usuario
     @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.GET)
-    public List<PlaceList> getUserPlaces(@PathVariable String userId) {
-        return userService.getUserPlaces(userId);
-    }
-
-    //Agregar una nueva lista de lugares al usuario
-    @RequestMapping(value = "/{userId}/place_list",method = RequestMethod.POST)
-    public ResponseEntity createUserPlaces(@PathVariable String userId, @RequestBody PlaceList placeList) {
-        return new ResponseEntity(userService.createUserPlaces(userId, placeList), HttpStatus.OK);
+    public ResponseEntity getPlaceList(@PathVariable String userId) {
+        return new ResponseEntity(userService.getUserPlaces(userId),HttpStatus.OK);
     }
 
     //Eliminar una lista de lugares del usuario
@@ -59,37 +53,39 @@ public class UserController {
         return new ResponseEntity(userService.deleteUserPlaces(userId, placeListName), HttpStatus.OK);
     }
 
+    //Obtener una lista de lugares del usuario
+    @RequestMapping(value = "/{userId}/place_list/{placeListName}",method = RequestMethod.GET)
+    public ResponseEntity getPlaceListByName(@PathVariable String userId, @PathVariable String placeListName) {
+        return new ResponseEntity(userService.getUserPlacesByName(userId, placeListName), HttpStatus.OK);
+    }
+
     //Cambiar nombre de lista lugares del usuario
     @RequestMapping(value = "/{userId}/place_list/{placeListCurrentName}",method = RequestMethod.PATCH)
-    public User modifyPlaceList(@PathVariable String userId, @PathVariable String placeListCurrentName, @RequestBody String placeListName) {
-        return userService.modifyUserPlaces(userId, placeListCurrentName, placeListName);
+    public ResponseEntity modifyPlaceList(@PathVariable String userId, @PathVariable String placeListCurrentName, @RequestBody String placeListName) {
+        return new ResponseEntity(userService.modifyUserPlaces(userId, placeListCurrentName, placeListName),HttpStatus.OK);
     }
 
-/*
-    @RequestMapping(value = "/place_list",method = RequestMethod.POST)
-    public PlaceList createPlaceList(@RequestBody String name) {
-        return new PlaceList(name, new User("Usuario actual", "fakePassword"));
+    //Agregar lugar a lista
+    @RequestMapping(value = "/{userId}/place_list/{placeListName}",method = RequestMethod.PUT)
+    public ResponseEntity addPlaceToPlaceList(@PathVariable String userId, @PathVariable String placeListName, @RequestBody Place place) {
+        return new ResponseEntity(userService.addPlaceToPlaceList(userId, placeListName, place),HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/place_list",method = RequestMethod.PATCH)
-    public PlaceList updatePlaceList(@RequestBody String name) {
-        return new PlaceList(name, new User("Usuario actual", "fakePassword"));
+    //Obtener lugar de lista
+    @RequestMapping(value = "/{userId}/place_list/{placeListName}/place/{placeId}",method = RequestMethod.GET)
+    public ResponseEntity getPlaceFromPlaceList(@PathVariable String userId, @PathVariable String placeListName, @PathVariable String placeId) {
+        return new ResponseEntity(userService.getPlaceFromPlaceList(userId, placeListName, placeId),HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/place_list",method = RequestMethod.DELETE)
-    public String deletePlaceList(@RequestBody String name) {
-        return "PlaceList eliminada";
+    //Eliminar lugar de lista
+    @RequestMapping(value = "/{userId}/place_list/{placeListName}/place/{placeId}",method = RequestMethod.DELETE)
+    public ResponseEntity deletePlaceFromPlaceList(@PathVariable String userId, @PathVariable String placeListName, @PathVariable String placeId) {
+        return new ResponseEntity(userService.deletePlaceFromPlaceList(userId, placeListName, placeId),HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/place_list/{listId}/{placeId}",method = RequestMethod.POST)
-    public PlaceList addPlaceToPlaceList(@PathVariable int listId, @PathVariable int placeId) {
-        return new PlaceList("Test", new User("Usuario actual", "fakePassword"));
-    }
-*/
-@RequestMapping(value = "/{userId}/place_list/{placeListId}",method = RequestMethod.POST)
-public ResponseEntity markPlaceAsVisited
-(@PathVariable String userId, @PathVariable String placeListId, @RequestBody Place place)
-    {
-        return new ResponseEntity(userService.markPlaceAsVisited(userId, placeListId, place), HttpStatus.OK);
+    //Marcar lugar como visitado
+    @RequestMapping(value = "/{userId}/place_list/{placeListName}/place/{placeId}",method = RequestMethod.PATCH)
+    public ResponseEntity markPlaceAsVisited(@PathVariable String userId, @PathVariable String placeListName, @PathVariable String placeId){
+       return new ResponseEntity(userService.markPlaceAsVisited(userId, placeListName, placeId), HttpStatus.OK);
     }
 }

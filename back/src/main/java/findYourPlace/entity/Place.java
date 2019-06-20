@@ -1,28 +1,37 @@
 package findYourPlace.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import findYourPlace.utils.PlaceDeserializer;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import findYourPlace.utils.PlaceDeserializer;
-
 @JsonDeserialize(using = PlaceDeserializer.class)
+
+//@CompoundIndex(def = "{'fortsquareId':1, 'userId':1, 'listName':1}", name = "compound_index_1", unique=true)
+@Document
 public class Place {
 
-    private final long id;
-    private String placeId;
+    @Id
+    private String id;
+    private String fortsquareId;
+    private String userId;
+    private String listName;
     private String name;
     private boolean visited;
     private String address;
-    private float  latitude;
+    private float latitude;
     private float longitude;
     private String postalCode;
     private String cc;
     private String city;
     private String state;
     private String country;
-
-    static private final AtomicLong counter = new AtomicLong();
+    private Date addedAt;
 
     /**
      * @return the visited
@@ -40,31 +49,17 @@ public class Place {
     }
 
     public Place(String name) {
-        this.id = counter.incrementAndGet();
         this.name = name;
     }
 
-    public Place(String name, long id) {
-        this.id = id;
+    public Place(String placeId, String name) {
+        this.fortsquareId = placeId;
         this.name = name;
     }
 
-    public Place(String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
-        this.id = counter.incrementAndGet();
-        this.name = name;
-        this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.postalCode = postalCode;
-        this.cc = cc;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-    }
-
-    public Place(String placeId, String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
-        this.id = counter.incrementAndGet();
-        this.placeId = placeId;
+    @PersistenceConstructor
+    public Place(String fortsquareId, String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
+        this.fortsquareId = fortsquareId;
         this.name = name;
         this.address = address;
         this.latitude = latitude;
@@ -74,19 +69,17 @@ public class Place {
         this.city = city;
         this.state = state;
         this.country = country;
+        this.addedAt = new Date();
     }
 
+    public Place(){}
 
-    public long getId() {
-        return id;
+    public String getFortsquareId() {
+        return fortsquareId;
     }
 
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
+    public void setFortsquareId(String placeId) {
+        this.fortsquareId = placeId;
     }
 
     public String getName() {
@@ -161,8 +154,24 @@ public class Place {
         this.country = country;
     }
 
+    public Date getAddedAt() {return addedAt;}
+
+    public boolean getVisited() {return visited;}
+
+    public String getUserId() { return userId; }
+
+    public void setUserId(String userId) {this.userId = userId; }
+
+    public String getListName() { return listName; }
+
+    public void setListName(String listName) { this.listName = listName; }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
+
     @Override
     public String toString() {
-        return id + " - " + placeId + " - " + name + " (" + address + ") ";
+        return fortsquareId + " - " + name + " (" + address + ") ";
     }
 }

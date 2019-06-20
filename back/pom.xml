@@ -7,7 +7,6 @@
   <groupId>utn.tacs</groupId>
   <artifactId>findurplace_back</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>war</packaging>
 
   <name>findurplace_back Maven Webapp</name>
   <!-- FIXME change it to the project's website -->
@@ -17,7 +16,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+	<start-class>findYourPlace.Application</start-class>
   </properties>
+  
 
   <dependencies>
     <dependency>
@@ -47,7 +48,7 @@
     <dependency>
         <groupId>org.telegram</groupId>
         <artifactId>telegrambots-spring-boot-starter</artifactId>
-        <version>4.1.2</version>
+        <version>4.3.1</version>
     </dependency>
 
 
@@ -79,6 +80,12 @@
 	  <artifactId>jaxb-impl</artifactId>
 	  <version>2.3.0</version>
 	</dependency>
+		
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-maven-plugin</artifactId>
+		<version>2.1.5.RELEASE</version>
+	</dependency>
 	
 	<dependency>
 	    <groupId>com.fasterxml.jackson.core</groupId>
@@ -91,23 +98,19 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-		<plugin>            
-		  <groupId>org.apache.maven.plugins</groupId>
-		  <artifactId>maven-war-plugin</artifactId>
-		  <configuration>
-		    <failOnMissingWebXml>false</failOnMissingWebXml>       
-		  </configuration>
-		</plugin>
         <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
-            </configuration>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>findYourPlace.Application</mainClass> 
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+			   </executions>
         </plugin>
     </plugins>
   </build>

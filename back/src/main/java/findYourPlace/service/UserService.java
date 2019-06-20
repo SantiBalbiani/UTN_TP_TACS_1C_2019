@@ -1,31 +1,41 @@
 package findYourPlace.service;
 
 import findYourPlace.entity.Place;
-import findYourPlace.entity.User;
 import findYourPlace.entity.PlaceList;
-import findYourPlace.mongoDB.Model;
-import org.springframework.dao.DuplicateKeyException;
+import findYourPlace.entity.User;
+import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
+import findYourPlace.service.impl.exception.CouldNotSaveElementException;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public interface UserService {
 
-    User createUser(User user);
+    User createUser(User user) throws CouldNotSaveElementException;
 
-    void deleteUser(String userId) throws NoSuchElementException;
+    void deleteUser(String userId) throws CouldNotRetrieveElementException;
 
-    User getUser(String userId) throws NoSuchElementException;
+    User getUser(String userId) throws CouldNotRetrieveElementException;
 
-    List<PlaceList> getUserPlaces(String userId);
+    List<PlaceList> getUserPlaces(String userId) throws CouldNotRetrieveElementException;
 
-    User createUserPlaces(String userId, PlaceList placeList) throws DuplicateKeyException;
+    User createUserPlaces(String userId, PlaceList placeList) throws  CouldNotSaveElementException;
 
-    User deleteUserPlaces(String userId, String placeListName) throws NoSuchElementException;
+    PlaceList getUserPlacesByName(String userId, String placeListName) throws  CouldNotRetrieveElementException;
 
-    User modifyUserPlaces(String userId, String placeListCurrentName, String placeListName);
+    User deleteUserPlaces(String userId, String placeListName) throws CouldNotRetrieveElementException;
 
-    Place getPlace(long id);
+    PlaceList modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotRetrieveElementException;
 
-    String markPlaceAsVisited(String userId, String placeListId, Place place);
+    PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotRetrieveElementException;
+
+    PlaceList addPlaceToPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException;
+
+    Place getPlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException ;
+
+    PlaceList deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException;
+
+    Place markPlaceAsVisited(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException;
+
+	List<User> getUsers() throws CouldNotRetrieveElementException;
+
 }
