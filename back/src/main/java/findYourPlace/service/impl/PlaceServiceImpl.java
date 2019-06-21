@@ -1,5 +1,6 @@
 package findYourPlace.service.impl;
 
+import findYourPlace.entity.AdminResponse;
 import findYourPlace.entity.Place;
 import findYourPlace.mongoDB.PlaceDao;
 import findYourPlace.service.PlaceService;
@@ -19,25 +20,23 @@ public class PlaceServiceImpl implements PlaceService {
 
 
     @Override
-    public List<Place> getPlacesRegisteredAtDaysAgo(Integer daysAgo) throws CouldNotRetrieveElementException {
+    public AdminResponse getPlacesRegisteredAtDaysAgo(Integer daysAgo) throws CouldNotRetrieveElementException {
         try {
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -daysAgo);
-            Date dateBeforeDays = cal.getTime();
+            Date dateBeforeDays;
+            AdminResponse adminResponse = new AdminResponse();
+            if(daysAgo > 0) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, -daysAgo);
+                dateBeforeDays = cal.getTime();
+                adminResponse.setSinceDaysAgo(String.valueOf(daysAgo));
+            } else {
+                dateBeforeDays = new Date();
+                dateBeforeDays.setTime(0);
+                adminResponse.setSinceDaysAgo("The begining of time");
+            }
             List<Place> places = placeDao.findByAddedAtGreaterThan(dateBeforeDays);
-            return places;
-        } catch (Exception e) {
-            throw new CouldNotRetrieveElementException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Place> getPlacesRegisteredSinceBeginingOfTime() throws CouldNotRetrieveElementException {
-        try {
-            Date dateBeforeDays = new Date();
-            dateBeforeDays.setTime(0);
-            List<Place> places = placeDao.findByAddedAtGreaterThan(dateBeforeDays);
-            return places;
+            adminResponse.setAddedPlaces(places.size());
+            return adminResponse;
         } catch (Exception e) {
             throw new CouldNotRetrieveElementException(e.getMessage());
         }

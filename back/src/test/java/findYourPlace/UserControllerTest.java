@@ -23,7 +23,7 @@ import java.io.IOException;
 public class UserControllerTest {
 
     private String serverPort="8080";
-    private String serverAddress = "http://springboot";
+    private String serverAddress = "http://localhost";
     private String getApiUrl() {
         return serverAddress + ":" + serverPort + "/user";
     }
@@ -35,7 +35,7 @@ public class UserControllerTest {
         String initialUsername = "xbkjgfsa"+String.valueOf(x);
         String listName = "placeList";
         String newListName = "newPlaceList";
-        String placeId = "placeId";
+        String placeId = "4dbfe4431e72dd48b1fb606c";
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
@@ -169,12 +169,10 @@ public class UserControllerTest {
 
     @Test
     public void testModifyPlaceListFromNotExistingUser() throws IOException, JSONException {
-        String url = getApiUrl()+"/"+"nonExistingUserId"+"/"+"place_list"+"/"+"placeListCurrentName";
+        String url = getApiUrl()+"/"+"nonExistingUserId"+"/"+"place_list"+"/"+"placeListCurrentName"+"/"+"placeListName";
         HttpPatch request = new HttpPatch(url);
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.CONNECTION, "Close");
-        request.setEntity(new StringEntity("placeListName",
-                ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
@@ -208,7 +206,7 @@ public class UserControllerTest {
         JSONObject json = new JSONObject(resultString);
         String retrievedListName = json.getString("name");
         Assert.assertEquals(placeListName,retrievedListName);
-     }
+    }
 
     public void testAddPlaceToNonExistingUserPlace(String username, String placeListName, String placeId) throws IOException, JSONException {
         String url = getApiUrl()+"/"+username+"/"+"place_list"+"/"+placeListName;
@@ -372,24 +370,20 @@ public class UserControllerTest {
     }
 
     public void testModifyNonExistingPlaceList(String userId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+"nonExistingPlaceList";
+        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+"nonExistingPlaceList"+"/"+"newPlaceListName";
         HttpPatch request = new HttpPatch(url);
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.CONNECTION, "Close");
-        request.setEntity(new StringEntity("newPlaceListName",
-                ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
 
     public void testModifyPlaceList(String userId,String placeListCurrentName, String placeListName) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListCurrentName;
+        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListCurrentName+"/"+placeListName;
         HttpPatch request = new HttpPatch(url);
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.CONNECTION, "Close");
-        request.setEntity(new StringEntity(placeListName,
-                ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 

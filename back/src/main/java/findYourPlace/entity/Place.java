@@ -1,9 +1,11 @@
 package findYourPlace.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import findYourPlace.utils.PlaceDeserializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,26 +14,36 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @JsonDeserialize(using = PlaceDeserializer.class)
 
-//@CompoundIndex(def = "{'fortsquareId':1, 'userId':1, 'listName':1}", name = "compound_index_1", unique=true)
 @Document
 public class Place {
 
     @Id
+    @JsonIgnore
     private String id;
     private String fortsquareId;
     private String userId;
     private String listName;
-    private String name;
     private boolean visited;
-    private String address;
-    private float latitude;
-    private float longitude;
-    private String postalCode;
-    private String cc;
-    private String city;
-    private String state;
-    private String country;
     private Date addedAt;
+    @Transient
+    private String name;
+    @Transient
+    private String address;
+    @Transient
+    private float latitude;
+    @Transient
+    private float longitude;
+    @Transient
+    private String postalCode;
+    @Transient
+    private String cc;
+    @Transient
+    private String city;
+    @Transient
+    private String state;
+    @Transient
+    private String country;
+
 
     /**
      * @return the visited
@@ -48,16 +60,14 @@ public class Place {
         return true;
     }
 
-    public Place(String name) {
-        this.name = name;
-    }
-
-    public Place(String placeId, String name) {
-        this.fortsquareId = placeId;
-        this.name = name;
-    }
-
     @PersistenceConstructor
+    public Place(String fortsquareId) {
+        this.fortsquareId = fortsquareId;
+        this.addedAt = new Date();
+        this.visited = false;
+    }
+
+
     public Place(String fortsquareId, String name, String address, float latitude, float longitude, String postalCode, String cc, String city, String state, String country) {
         this.fortsquareId = fortsquareId;
         this.name = name;
@@ -172,6 +182,6 @@ public class Place {
 
     @Override
     public String toString() {
-        return "**" +fortsquareId + "** - " + name + (address != null ? " (" + address + ") " : "");
+        return fortsquareId + " - " + name + " (" + address + ") ";
     }
 }

@@ -78,10 +78,4 @@ public class AdminController {
         return new ResponseEntity(placeService.getPlacesRegisteredAtDaysAgo(days_ago), HttpStatus.OK);
     }
 
-    //Visualizar lugares
-    @RequestMapping(value = "/places_registered_since_begining_of_time",method = RequestMethod.GET)
-    public ResponseEntity getPlacesRegisteredAtDaysAgo() {
-        return new ResponseEntity(placeService.getPlacesRegisteredSinceBeginingOfTime(), HttpStatus.OK);
-    }
-
 }
