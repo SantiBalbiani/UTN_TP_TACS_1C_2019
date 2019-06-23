@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import findYourPlace.entity.User;
+import findYourPlace.security.Constants;
 import findYourPlace.service.TokenService;
 
 import java.security.Key;
@@ -15,43 +16,47 @@ import java.util.Date;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class TokenServiceImpl implements TokenService {
 
-    private static String USERNAME = "username";
-    private static String SECRET_KEY = "pepe";
 
     public String getToken(User user) {
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
         long nowMillis = System.currentTimeMillis();
-        //Date now = new Date(nowMillis);
-        Date fecha = new Date(2000,01,01);
+        Date now = new Date(nowMillis);
+        long expired = nowMillis + Constants.TOKEN_EXPIRATION_TIME;
+        
+        String token = Jwts.builder().setIssuedAt(now)
+        		.setSubject(user.getUsername())
+        		.claim("Rol", user.getRole())
+				.setExpiration(new Date(expired))
+				.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
 
-        //We will sign our JWT with our ApiKey secret
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-
-
-        JwtBuilder builder = Jwts.builder()
-                .setIssuedAt(fecha)
-                .setSubject("user/" + user.getUsername())
-                .claim(USERNAME, user.getUsername())
-                .signWith(signatureAlgorithm, signingKey);
-
-        return builder.compact();
+        return token;
     }
 
     public String getUsername(String token) {
-        Jws<Claims> claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token);
 
-        return (String) claims.getBody().get(USERNAME);
+        Jws<Claims> claims = Jwts.parser()
+				.setSigningKey(Constants.SUPER_SECRET_KEY)
+				.parseClaimsJws(token);
+				
+        return (String) claims.getBody().get("Rol");
+        
+    }
+    
+    public String getRol(String token) {
+
+        Jws<Claims> claims = Jwts.parser()
+				.setSigningKey(Constants.SUPER_SECRET_KEY)
+				.parseClaimsJws(token);
+				
+        return (String) claims.getBody().get("Rol");
+        
     }
 
 }

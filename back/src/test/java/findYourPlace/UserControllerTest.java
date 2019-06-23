@@ -1,11 +1,17 @@
 package findYourPlace;
 
 import findYourPlace.entity.Place;
+import findYourPlace.security.Constants;
+import findYourPlace.security.SecurityConfig;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.Header;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -13,13 +19,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by icernigoj on 11/05/2019.
  */
+
+
+@SpringBootTest
 public class UserControllerTest {
 
     private String serverPort="8080";
@@ -27,7 +37,28 @@ public class UserControllerTest {
     private String getApiUrl() {
         return serverAddress + ":" + serverPort + "/user";
     }
+    
+    //Se crea token para pruebas
+    
+    long nowMillis = System.currentTimeMillis();
+    Date now = new Date(nowMillis);
+    long expired = nowMillis + 999999;
+    
+    String token = Jwts.builder().setIssuedAt(now)
+    		.setSubject("usertest")
+    		.claim("Rol", "user")
+			.setExpiration(new Date(expired))
+			.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
+    
 
+    @Test
+    public void testCreateTestUser() throws IOException, JSONException {
+
+        String initialUsername = "usertest";
+
+        testCreateUser(initialUsername,"user");
+    }
+    
     @Test
     public void testUserHappyPath() throws IOException, JSONException {
         //Set variables
@@ -123,7 +154,7 @@ public class UserControllerTest {
     public void testGetNotExistingUser() throws IOException, JSONException {
         String url = getApiUrl()+"/"+"notExistingUserId";
         HttpUriRequest request = new HttpGet(url);
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.setHeader(HttpHeaders.AUTHORIZATION, token); 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
@@ -134,8 +165,8 @@ public class UserControllerTest {
         HttpPost request = new HttpPost(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
-
+        request.setHeader(HttpHeaders.AUTHORIZATION, token); 
+        
         request.setEntity(new StringEntity("{\"name\":\"" + "list_name"+ "\"}",
                 ContentType.create("application/json")));
 
@@ -162,7 +193,7 @@ public class UserControllerTest {
     public void testGetPlaceListsFromNotExistingUser() throws IOException, JSONException {
         String url = getApiUrl()+"/"+"nonExsistingUserId"+"/"+"place_list";
         HttpUriRequest request = new HttpGet(url);
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.setHeader(HttpHeaders.AUTHORIZATION, token); 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
@@ -172,7 +203,7 @@ public class UserControllerTest {
         String url = getApiUrl()+"/"+"nonExistingUserId"+"/"+"place_list"+"/"+"placeListCurrentName";
         HttpPatch request = new HttpPatch(url);
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.setHeader(HttpHeaders.AUTHORIZATION, token); 
         request.setEntity(new StringEntity("placeListName",
                 ContentType.create("application/json")));
 
@@ -186,8 +217,7 @@ public class UserControllerTest {
         HttpPatch request = new HttpPatch(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
-
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
@@ -198,7 +228,7 @@ public class UserControllerTest {
         HttpPut request = new HttpPut(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
         request.setEntity(new StringEntity("{\"id\":\"" + placeId +"\"}",
                 ContentType.create("application/json")));
 
@@ -215,7 +245,7 @@ public class UserControllerTest {
         HttpPut request = new HttpPut(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
         request.setEntity(new StringEntity("{\"placeId\":\"" + placeId +"\"}",
                 ContentType.create("application/json")));
 
@@ -230,7 +260,7 @@ public class UserControllerTest {
         HttpDelete request = new HttpDelete(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
@@ -245,7 +275,7 @@ public class UserControllerTest {
         HttpGet request = new HttpGet(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
@@ -260,7 +290,7 @@ public class UserControllerTest {
         HttpPatch request = new HttpPatch(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
@@ -274,12 +304,13 @@ public class UserControllerTest {
         HttpPost request = new HttpPost(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         request.setEntity(new StringEntity("{\"username\":\"" + username + "\"," +
                 "\"role\":\"" + role + "\"," +
                 "\"password\":\"passdsfd\""+
                 "}",
-                ContentType.create("application/json")));
+                ContentType.create("application/json")
+                ));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
@@ -294,7 +325,7 @@ public class UserControllerTest {
         String url = getApiUrl();
         HttpPost request = new HttpPost(url);
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
         request.setEntity(new StringEntity("{\"username\":\"" + username + "\"," +
                 "\"role\":\"" + role + "\"," +
                 "\"password\":\"passdsfd\""+
@@ -309,7 +340,7 @@ public class UserControllerTest {
         String url = getApiUrl()+"/"+userId+"/"+"place_list";
         HttpPost request = new HttpPost(url);
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
         request.setEntity(new StringEntity("{\"name\":\"" + listName+ "\"}",
                 ContentType.create("application/json")));
 
@@ -327,7 +358,7 @@ public class UserControllerTest {
         String url = getApiUrl()+"/"+userId+"/"+"place_list";
         HttpPost request = new HttpPost(url);
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token); 
         request.setEntity(new StringEntity("{\"name\":\"" + listName+ "\"}",
                 ContentType.create("application/json")));
 
@@ -339,7 +370,7 @@ public class UserControllerTest {
     public void testGetPlaceListByName(String userId,String listName) throws IOException, JSONException {
         String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+listName;
         HttpGet request = new HttpGet(url);
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(HttpStatus.SC_OK,httpResponse.getStatusLine().getStatusCode());
         String resultString = EntityUtils.toString(httpResponse.getEntity());
@@ -351,7 +382,7 @@ public class UserControllerTest {
     public void testGetPlaceLists(String userId) throws IOException, JSONException {
         String url = getApiUrl()+"/"+userId+"/"+"place_list";
         HttpUriRequest request = new HttpGet(url);
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(HttpStatus.SC_OK,httpResponse.getStatusLine().getStatusCode());
         String resultString = EntityUtils.toString(httpResponse.getEntity());
@@ -362,7 +393,7 @@ public class UserControllerTest {
     public void testGetUser(String initialUsername, String userId) throws IOException, JSONException {
         String url = getApiUrl()+"/"+userId;
         HttpUriRequest request = new HttpGet(url);
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
         String resultString = EntityUtils.toString(httpResponse.getEntity());
@@ -375,7 +406,7 @@ public class UserControllerTest {
         String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+"nonExistingPlaceList";
         HttpPatch request = new HttpPatch(url);
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         request.setEntity(new StringEntity("newPlaceListName",
                 ContentType.create("application/json")));
 
@@ -387,7 +418,7 @@ public class UserControllerTest {
         String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListCurrentName;
         HttpPatch request = new HttpPatch(url);
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         request.setEntity(new StringEntity(placeListName,
                 ContentType.create("application/json")));
 
@@ -402,7 +433,7 @@ public class UserControllerTest {
     public void testDeletePlaceList(String userId,String placeListName) throws IOException, JSONException {
         String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName;
         HttpDelete request = new HttpDelete(url);
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
         String resultString = EntityUtils.toString(httpResponse.getEntity());
@@ -414,7 +445,7 @@ public class UserControllerTest {
     public void testDeleteUser(String userId) throws IOException, JSONException {
         String url = getApiUrl()+"/"+userId;
         HttpDelete request = new HttpDelete(url);
-        request.addHeader(HttpHeaders.CONNECTION, "Close");
+        request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
         Assert.assertEquals(HttpStatus.SC_OK,httpResponse.getStatusLine().getStatusCode());
     }
