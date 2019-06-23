@@ -60,8 +60,8 @@ public class UserController {
     }
 
     //Cambiar nombre de lista lugares del usuario
-    @RequestMapping(value = "/{userId}/place_list/{placeListCurrentName}",method = RequestMethod.PATCH)
-    public ResponseEntity modifyPlaceList(@PathVariable String userId, @PathVariable String placeListCurrentName, @RequestBody String placeListName) {
+    @RequestMapping(value = "/{userId}/place_list/{placeListCurrentName}/{placeListName}",method = RequestMethod.PATCH)
+    public ResponseEntity modifyPlaceList(@PathVariable String userId, @PathVariable String placeListCurrentName, @PathVariable String placeListName) {
         return new ResponseEntity(userService.modifyUserPlaces(userId, placeListCurrentName, placeListName),HttpStatus.OK);
     }
 

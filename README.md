@@ -15,3 +15,17 @@ Nota:
     - Mongo.
     - La api en sí, sin tests.
     - Los tests de integración de la api impactando contra el contenedor anterior.
+ 
+  Nombre Bot Telegram: tp_tacs_bot
+  Endpoint de Telegram: http://35.180.227.247:8080
+  
+  Adicionalmente, se subirá un archivo de Postman testApis.json con los metodos testeados.
+  
+  
+  
+  
+  
+  
+  
+  
+

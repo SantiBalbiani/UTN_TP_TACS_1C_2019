@@ -66,15 +66,6 @@ public class AdminController {
         return response;
     }
 
-    @RequestMapping("/dashboard/place")
-    public HashMap<String, Integer> totalRegisteredPlaces() {
-        HashMap<String, Integer> response = new HashMap<>();
-
-        response.put("totalRegisteredPlaces", 12312);
-
-        return response;
-    }
-
     //Visualizar un usuario
     @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
     public ResponseEntity getUser(@PathVariable String userId) {
@@ -85,12 +76,6 @@ public class AdminController {
     @RequestMapping(value = "/places_registered_days_ago/{days_ago}",method = RequestMethod.GET)
     public ResponseEntity getPlacesRegisteredAtDaysAgo(@PathVariable Integer days_ago) {
         return new ResponseEntity(placeService.getPlacesRegisteredAtDaysAgo(days_ago), HttpStatus.OK);
-    }
-
-    //Visualizar lugares
-    @RequestMapping(value = "/places_registered_since_begining_of_time",method = RequestMethod.GET)
-    public ResponseEntity getPlacesRegisteredAtDaysAgo() {
-        return new ResponseEntity(placeService.getPlacesRegisteredSinceBeginingOfTime(), HttpStatus.OK);
     }
 
 }

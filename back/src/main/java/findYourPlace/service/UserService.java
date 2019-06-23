@@ -16,6 +16,8 @@ public interface UserService {
 
     User getUser(String userId) throws CouldNotRetrieveElementException;
 
+    User getUserByUsername(String username) throws CouldNotRetrieveElementException;
+
     List<PlaceList> getUserPlaces(String userId) throws CouldNotRetrieveElementException;
 
     User createUserPlaces(String userId, PlaceList placeList) throws  CouldNotSaveElementException;

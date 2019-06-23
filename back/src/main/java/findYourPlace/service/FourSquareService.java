@@ -11,4 +11,5 @@ public interface FourSquareService {
 
     List<Place> searchPlaces(String description);
     List<Place> searchPlaces(String description, Float latitude, Float longitude);
+    Place getPlaceById(String fourtsquareId);
 }

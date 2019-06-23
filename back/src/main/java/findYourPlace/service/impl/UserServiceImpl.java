@@ -6,6 +6,7 @@ import findYourPlace.entity.User;
 import findYourPlace.entity.exception.ElementAlreadyExistsException;
 import findYourPlace.entity.exception.ElementDoesNotExistException;
 import findYourPlace.mongoDB.UserDao;
+import findYourPlace.service.FourSquareService;
 import findYourPlace.service.PlaceService;
 import findYourPlace.service.UserService;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
@@ -28,22 +29,52 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PlaceService placeService;
 
+    @Autowired
+    private FourSquareService fourSquareService;
+
 
     @Override
     public User createUser(User user) throws CouldNotSaveElementException {
         try {
-        	user.setPassword(Encrypt.encrypt(user.getPassword()));
+            user.setPassword(Encrypt.encrypt(user.getPassword()));
             return userDao.save(user);
         } catch (DuplicateKeyException ex){
             throw new CouldNotSaveElementException(ex.getMessage());
         }
     }
 
+
+    @Override
+    public User getUserByUsername(String username) throws CouldNotRetrieveElementException {
+        try {
+            return userDao.findByUsername(username);
+        } catch (NoSuchElementException ex){
+            throw new CouldNotRetrieveElementException(ex.getMessage());
+        }
+    }
+
+
     @Override
     public User getUser(String userId) throws CouldNotRetrieveElementException {
         try {
-            Optional<User> user = userDao.findById(userId);
-            return user.get();
+            User user = userDao.findById(userId).get();
+            for(PlaceList placeList:user.getPlaceLists()){
+                for(Place place:placeList.getPlaces()){
+                    Place placeFS = fourSquareService.getPlaceById(place.getFortsquareId());
+                    place.setAddress(placeFS.getAddress());
+                    place.setCc(placeFS.getCc());
+                    place.setCity(placeFS.getCity());
+                    place.setCountry(placeFS.getCountry());
+                    place.setLatitude(placeFS.getLatitude());
+                    place.setLongitude(placeFS.getLongitude());
+                    place.setPostalCode(placeFS.getPostalCode());
+                    place.setState(placeFS.getState());
+                    place.setName(placeFS.getName());
+                    place.setListName(placeList.getName());
+                    place.setUserId(userId);
+                }
+            }
+            return user;
         } catch (NoSuchElementException ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
@@ -113,14 +144,14 @@ public class UserServiceImpl implements UserService {
     public PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotRetrieveElementException{
         try {
             User user = getUser(userId);
-            place.setUserId(user.getId());
-            place.setListName(placeListName);
 
             //save place as subordinated object in user/placeList
             user.addPlaceToPlaceList(placeListName, place);
             userDao.save(user);
 
             //save place as independent object
+            place.setUserId(user.getId());
+            place.setListName(placeListName);
             placeService.save(place);
 
             return user.findPlaceListByName(placeListName);
@@ -138,14 +169,14 @@ public class UserServiceImpl implements UserService {
         try {
             User user = getUser(userId);
             Place place = new Place(placeId);
-            place.setUserId(user.getId());
-            place.setListName(placeListName);
 
             //save place as subordinated object in user/placeList
             user.addPlaceToPlaceList(placeListName, place);
             userDao.save(user);
 
             //save place as independent object
+            place.setUserId(user.getId());
+            place.setListName(placeListName);
             placeService.save(place);
 
             return user.findPlaceListByName(placeListName);
@@ -182,7 +213,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Place markPlaceAsVisited(String userId, String placeListName, String placeId) 
+    public Place markPlaceAsVisited(String userId, String placeListName, String placeId)
             throws CouldNotRetrieveElementException {
         try {
             User user = getUser(userId);

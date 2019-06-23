@@ -2,6 +2,7 @@ package findYourPlace.service.impl;
 
 import findYourPlace.entity.Place;
 import findYourPlace.service.FourSquareService;
+import findYourPlace.utils.PlaceResponse;
 import findYourPlace.utils.PlacesResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -25,20 +26,37 @@ public class FourSquareServiceImpl implements FourSquareService {
     private String version = "20192204";
 
     private String buenosAiresLL = "-34.6161063,-58.480677";
+    private String fourtsquareUrl = "https://api.foursquare.com/v2/venues";
 
-    private String getDetailUrl(String placeId) {
-        return "https://api.foursquare.com/v2/venues/"+placeId+"?" +
-                "client_id=" + clientid + "&client_secret=" + clientsecret + "&v=" + version;
-    }
-
-    private String getSearchUrl() {
-        return "https://api.foursquare.com/v2/venues/search?" +
+    private String getHostUrl() {
+        return fourtsquareUrl+"/search?" +
                 "client_id=" + clientid + "&client_secret=" + clientsecret + "&v=" + version + "&ll=" + buenosAiresLL;
     }
 
     @Override
+    public Place getPlaceById(String fourtsquareId){
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(fourtsquareUrl+"/"+fourtsquareId)
+                .queryParam("client_id", clientid)
+                .queryParam("client_secret",clientsecret)
+                .queryParam("v",version);
+
+        String uriString = builder.toUriString();
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<PlaceResponse> response = restTemplate.exchange(
+                uriString,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<PlaceResponse>(){});
+
+        Place place = response.getBody().getPlace();
+
+        return place;
+    }
+
+    @Override
     public List<Place> searchPlaces(String description) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getSearchUrl())
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getHostUrl())
                 .queryParam("query", description);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -56,23 +74,9 @@ public class FourSquareServiceImpl implements FourSquareService {
 
     @Override
     public List<Place> searchPlaces(String description, Float latitude, Float longitude) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getSearchUrl())
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getHostUrl())
                 .queryParam("query", description)
                 .queryParam("ll", latitude + "," + longitude);
-
-        ResponseEntity<PlacesResponse> response = (new RestTemplate()).exchange(
-                builder.toUriString(),
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<PlacesResponse>(){});
-
-        List<Place> places = response.getBody().getPlaces();
-
-        return places;
-    }
-
-    public List<Place> getPlaceById(String placeId) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getDetailUrl(placeId));
 
         RestTemplate restTemplate = new RestTemplate();
 

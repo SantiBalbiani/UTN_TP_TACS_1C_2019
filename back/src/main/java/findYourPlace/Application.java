@@ -21,13 +21,6 @@ public class Application{
     		
     	ApiContextInitializer.init();
 
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-        try {
-            telegramBotsApi.registerBot(new TelegramBot());
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-
         SpringApplication.run(Application.class, args);
         
     }
