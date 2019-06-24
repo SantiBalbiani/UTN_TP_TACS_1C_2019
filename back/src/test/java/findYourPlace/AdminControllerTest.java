@@ -51,7 +51,7 @@ public class AdminControllerTest {
     		.claim("Rol", "admin")
 			.setExpiration(new Date(expired))
 			.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
-    
+    /*
     @Test
     public void testInterestedUsers() throws IOException, JSONException {
         int placeId = 1;
@@ -89,5 +89,5 @@ public class AdminControllerTest {
 
         Assert.assertTrue(commonPlaces >= 0);
     }
-
+*/
 }

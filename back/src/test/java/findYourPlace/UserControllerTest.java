@@ -44,12 +44,23 @@ public class UserControllerTest {
     Date now = new Date(nowMillis);
     long expired = nowMillis + 999999;
     
-    String token = Jwts.builder().setIssuedAt(now)
-    		.setSubject("usertest")
+    double x = Math.random();
+    
+    String initialUsername = "xbkjgfsa"+String.valueOf(x);
+    
+    final String  token = Jwts.builder().setIssuedAt(now)
+    		.setSubject(initialUsername)
     		.claim("Rol", "user")
 			.setExpiration(new Date(expired))
 			.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
- 
+    
+    @Test
+    public void testCreateinitialUser() throws IOException, JSONException {
+
+        //Create user, get user, create list, get list, delete list
+        String id = testCreateUser(initialUsername,"user");
+
+    }
     
     @Test
     public void testUserHappyPath() throws IOException, JSONException {
@@ -297,7 +308,7 @@ public class UserControllerTest {
         HttpPost request = new HttpPost(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.addHeader(HttpHeaders.AUTHORIZATION, token);
+        //request.addHeader(HttpHeaders.AUTHORIZATION, token);
         request.setEntity(new StringEntity("{\"username\":\"" + username + "\"," +
                 "\"role\":\"" + role + "\"," +
                 "\"password\":\"passdsfd\""+
@@ -388,7 +399,7 @@ public class UserControllerTest {
         HttpUriRequest request = new HttpGet(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
-        Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
+        Assert.assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
         String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
         String username = json.getString("username");
@@ -432,7 +443,7 @@ public class UserControllerTest {
         HttpDelete request = new HttpDelete(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
-        Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
+        Assert.assertEquals(HttpStatus.SC_OK,httpResponse.getStatusLine().getStatusCode());
         String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
         JSONArray jsonArray = json.getJSONArray("placeLists");

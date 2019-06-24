@@ -33,7 +33,8 @@ public class JwtTokenProvider {
 	UserDao userDao;
 	
     @Autowired
-    private UserDetailsService userDetailsService;
+    private CustomUserDetailsService userDetailsService;
+    
     @PostConstruct
     protected void init() {
     	permisos.put("admin", "/user");
@@ -41,7 +42,14 @@ public class JwtTokenProvider {
     }
     public Authentication getAuthentication(String token) {
     	
+    	System.out.println("Token es:" + token);
+    	System.out.println("Username es:" + getUsername(token));
+    	
+    	System.out.println("userDetailsService es:" + userDetailsService);
+    	
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
+        
+        System.out.println("userDetails es:" + userDetails);
         
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
@@ -80,11 +88,13 @@ public class JwtTokenProvider {
     
     public Boolean rolValidoEndpoint(String rol, String endpoint)
     {
+
     	String permisoMap = permisos.get(rol);
     	
     	Boolean permisoMapValido = permisoMap == null ? false : (permisoMap) == endpoint;
     	
     	return ( ("/" + rol).equals(endpoint) || permisoMapValido );
+
 
     }
 }

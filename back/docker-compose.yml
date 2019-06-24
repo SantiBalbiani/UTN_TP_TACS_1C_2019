@@ -1,4 +1,4 @@
-version: "2"
+version: "2.1"
 
 services:
   springboot-test:
@@ -8,8 +8,9 @@ services:
     image: "springboot-test_image"
     container_name: "springboot-test_container"
     depends_on:
-    - "springboot"
-
+      springboot:
+        condition: service_healthy
+    
   springboot:
     build:
       context: .
@@ -19,6 +20,11 @@ services:
     container_name: "springboot_container"
     ports:
     - "8080:8080"
+    healthcheck:
+        test: "exit 0"
+        interval: 20s
+        timeout: 10s
+        retries: 5
     depends_on:
     - "mongo"
 

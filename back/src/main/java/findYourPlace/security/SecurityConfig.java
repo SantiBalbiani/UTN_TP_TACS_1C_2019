@@ -23,21 +23,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+    //¿@formatter:off
         http
-            .httpBasic().disable()
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-                .authorizeRequests()
-    			.antMatchers(HttpMethod.GET, Constants.PRUEBA_TOKEN_URL).permitAll()
-    			.antMatchers(HttpMethod.POST, Constants.CREATE_USER_URL, Constants.LOGIN_URL).permitAll()
-            .and()
+        .httpBasic().disable()
+        .csrf().disable()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
             .authorizeRequests()
-            .anyRequest().authenticated()
-            .and()
-            .apply(new JwtConfigurer(jwtTokenProvider))
-            ;
+			.antMatchers(HttpMethod.GET, Constants.PRUEBA_TOKEN_URL).permitAll()
+			.antMatchers(HttpMethod.POST, Constants.CREATE_USER_URL, Constants.LOGIN_URL).permitAll()
+        .and()
+        .authorizeRequests()
+        .anyRequest().authenticated()
+        .and()
+        .apply(new JwtTokenFilterConfigurer(jwtTokenProvider))
+        ;
         
     }
     
