@@ -12,4 +12,5 @@ public interface PlaceService {
     Place updatePlace(Place place) throws CouldNotRetrieveElementException;
     void deleteByComposedIndex(String fortsquareId,String userId,String listName) throws CouldNotRetrieveElementException;
     Place save(Place place) throws CouldNotSaveElementException;
+    AdminResponse getPlaces() throws CouldNotRetrieveElementException;
 }

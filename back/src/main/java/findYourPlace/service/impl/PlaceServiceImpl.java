@@ -41,6 +41,21 @@ public class PlaceServiceImpl implements PlaceService {
             throw new CouldNotRetrieveElementException(e.getMessage());
         }
     }
+    
+    @Override
+    public AdminResponse getPlaces() throws CouldNotRetrieveElementException {
+        try {
+        	
+        	AdminResponse adminResponse = new AdminResponse();
+        	
+        	adminResponse.setAddedPlaces((int) placeDao.count());
+
+            return adminResponse;
+            
+        } catch (Exception e) {
+            throw new CouldNotRetrieveElementException(e.getMessage());
+        }
+    }
 
     @Override
     public Place findById(String id) throws CouldNotRetrieveElementException{

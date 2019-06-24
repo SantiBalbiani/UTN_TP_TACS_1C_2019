@@ -77,5 +77,11 @@ public class AdminController {
     public ResponseEntity getPlacesRegisteredAtDaysAgo(@PathVariable Integer days_ago) {
         return new ResponseEntity(placeService.getPlacesRegisteredAtDaysAgo(days_ago), HttpStatus.OK);
     }
+    
+    //Lugares registrados
+    @RequestMapping(value = "/place/dashboard",method = RequestMethod.GET)
+    public ResponseEntity getDashboard() {
+        return new ResponseEntity(placeService.getPlaces(), HttpStatus.OK);
+    }
 
 }

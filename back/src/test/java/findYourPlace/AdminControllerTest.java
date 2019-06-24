@@ -48,7 +48,7 @@ public class AdminControllerTest {
     
     String token = Jwts.builder().setIssuedAt(now)
     		.setSubject("usertest")
-    		.claim("Rol", "user")
+    		.claim("Rol", "admin")
 			.setExpiration(new Date(expired))
 			.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
     
@@ -62,7 +62,7 @@ public class AdminControllerTest {
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
-        Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
+        Assert.assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
 
         String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
@@ -74,18 +74,18 @@ public class AdminControllerTest {
 
     @Test
     public void testTotalRegisteredPlaces() throws  IOException, JSONException {
-        HttpUriRequest request = new HttpGet(getApiUrl() + "/dashboard/place");
+        HttpUriRequest request = new HttpGet(getApiUrl() + "/place/dashboard");
         
         request.setHeader(HttpHeaders.AUTHORIZATION, token); 
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
-        Assert.assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
+        Assert.assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
 
         String resultString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject json = new JSONObject(resultString);
 
-        int commonPlaces = json.getInt("totalRegisteredPlaces");
+        int commonPlaces = json.getInt("addedPlaces");
 
         Assert.assertTrue(commonPlaces >= 0);
     }

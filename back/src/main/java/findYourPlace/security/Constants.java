@@ -6,7 +6,7 @@ public final class Constants {
 	
 	public static final String SUPER_SECRET_KEY = "tptacs";
 	
-	public static final long TOKEN_EXPIRATION_TIME = 20000;
+	public static final long TOKEN_EXPIRATION_TIME = 999999;
 	
 	public static final String LOGIN_URL = "/login";
 	

@@ -49,15 +49,7 @@ public class UserControllerTest {
     		.claim("Rol", "user")
 			.setExpiration(new Date(expired))
 			.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
-    
-
-    @Test
-    public void testCreateTestUser() throws IOException, JSONException {
-
-        String initialUsername = "usertest";
-
-        testCreateUser(initialUsername,"user");
-    }
+ 
     
     @Test
     public void testUserHappyPath() throws IOException, JSONException {
