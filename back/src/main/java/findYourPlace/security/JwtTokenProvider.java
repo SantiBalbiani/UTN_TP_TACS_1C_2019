@@ -91,6 +91,12 @@ public class JwtTokenProvider {
 
     	String permisoMap = permisos.get(rol);
     	
+    	System.out.println("permisoMap: " + permisoMap);
+    	
+    	System.out.println("rol: " + rol);
+    	
+    	System.out.println("endpoint: " + endpoint);
+    	
     	Boolean permisoMapValido = permisoMap == null ? false : (permisoMap) == endpoint;
     	
     	return ( ("/" + rol).equals(endpoint) || permisoMapValido );

@@ -1,17 +1,15 @@
 package findYourPlace;
 
-import findYourPlace.entity.Place;
 import findYourPlace.security.Constants;
-import findYourPlace.security.SecurityConfig;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.Header;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -20,6 +18,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import java.io.IOException;
 import java.util.Date;
@@ -30,6 +29,7 @@ import java.util.Date;
 
 
 @SpringBootTest
+
 public class UserControllerTest {
 
     private String serverPort="8080";
@@ -40,33 +40,35 @@ public class UserControllerTest {
     
     //Se crea token para pruebas
     
-    long nowMillis = System.currentTimeMillis();
-    Date now = new Date(nowMillis);
-    long expired = nowMillis + 999999;
+    static long nowMillis = System.currentTimeMillis();
+    static Date now = new Date(nowMillis);
+    static long expired = nowMillis + 999999;
     
-    double x = Math.random();
+    static final String initialUsername = "pepe" + RandomStringUtils.random(12, true, false).toLowerCase();
     
-    String initialUsername = "xbkjgfsa"+String.valueOf(x);
-    
-    final String  token = Jwts.builder().setIssuedAt(now)
+    static final String  token = Jwts.builder().setIssuedAt(now)
     		.setSubject(initialUsername)
     		.claim("Rol", "user")
 			.setExpiration(new Date(expired))
 			.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
     
+    String InitialUserId;
+    
     @Test
-    public void testCreateinitialUser() throws IOException, JSONException {
+    @Order(1)  
+    public void testCreateInitialUser() throws IOException, JSONException {
 
         //Create user, get user, create list, get list, delete list
-        String id = testCreateUser(initialUsername,"user");
+    	InitialUserId = testCreateUser(initialUsername,"user");
 
     }
     
     @Test
+    @Order(2)
     public void testUserHappyPath() throws IOException, JSONException {
-        //Set variables
-        double x = Math.random();
-        String initialUsername = "xbkjgfsa"+String.valueOf(x);
+
+
+        String initialUsername = "pepe" + RandomStringUtils.random(12, true, false).toLowerCase();
         String listName = "placeList";
         String newListName = "newPlaceList";
         String placeId = "4dbfe4431e72dd48b1fb606c";
@@ -90,10 +92,9 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(3)
     public void addPlaceToNonExistingUserPlace() throws IOException, JSONException {
-        //Set variables
-        double x = Math.random();
-        String initialUsername = "xbkjgfsa"+String.valueOf(x);
+
         String listName = "placeList";
 
         //Create user, get user, create list, get list, delete list
@@ -105,10 +106,9 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(4)
     public void testCreateDuplicatedPlaceList() throws IOException, JSONException {
-        //Set variables
-        double x = Math.random();
-        String initialUsername = "xbkjgfsa"+String.valueOf(x);
+
         String listName = "placeList";
 
         //Create user, get user, create list, get list, delete list
@@ -121,10 +121,9 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(5)
     public void testMarkNonExistingPlaceAsVisited() throws IOException, JSONException {
-        //Set variables
-        double x = Math.random();
-        String initialUsername = "xbkjgfsa"+String.valueOf(x);
+
         String listName = "placeList";
 
         //Create user, get user, create list, get list, delete list
@@ -137,10 +136,9 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(6)
     public void testModifyNonExistingPlaceListInExistingUser() throws IOException, JSONException {
-        //Set variables
-        double x = Math.random();
-        String initialUsername = "xbkjgfsa"+String.valueOf(x);
+
         String listName = "placeList";
 
         //Create user, get user, create list, get list, delete list
@@ -154,6 +152,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(7)
     public void testGetNotExistingUser() throws IOException, JSONException {
         String url = getApiUrl()+"/"+"notExistingUserId";
         HttpUriRequest request = new HttpGet(url);
@@ -163,6 +162,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(8)
     public void testCreatePlaceListInNonExistingUser() throws IOException, JSONException {
         String url = getApiUrl()+"/"+"notExistingUserId"+"/"+"place_list";
         HttpPost request = new HttpPost(url);
@@ -179,6 +179,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(9)
     public void testCreateDuplicatedUser() throws IOException, JSONException {
         //Set variables
         double x = Math.random();
@@ -193,6 +194,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(10)
     public void testGetPlaceListsFromNotExistingUser() throws IOException, JSONException {
         String url = getApiUrl()+"/"+"nonExsistingUserId"+"/"+"place_list";
         HttpUriRequest request = new HttpGet(url);
@@ -202,6 +204,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(11)
     public void testModifyPlaceListFromNotExistingUser() throws IOException, JSONException {
         String url = getApiUrl()+"/"+"nonExistingUserId"+"/"+"place_list"+"/"+"placeListCurrentName"+"/"+"placeListName";
         HttpPatch request = new HttpPatch(url);
@@ -215,7 +218,14 @@ public class UserControllerTest {
 
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
+    
+    @Test
+    @Order(12)
+    public void testDeleteinitialUser() throws IOException, JSONException {
 
+    	testDeleteUser(InitialUserId);
+    }
+    
     public void testMarkNonExistingPlaceAsVisited(String userId, String placeListName, String placeId) throws IOException, JSONException {
         String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
         HttpPatch request = new HttpPatch(url);
@@ -308,7 +318,7 @@ public class UserControllerTest {
         HttpPost request = new HttpPost(url);
 
         request.setHeader("Content-Type", "application/json");
-        //request.addHeader(HttpHeaders.AUTHORIZATION, token);
+
         request.setEntity(new StringEntity("{\"username\":\"" + username + "\"," +
                 "\"role\":\"" + role + "\"," +
                 "\"password\":\"passdsfd\""+

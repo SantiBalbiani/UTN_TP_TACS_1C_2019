@@ -27,7 +27,7 @@ public class AdminController {
     @Autowired
     private PlaceService placeService;
 
-    @RequestMapping("/list_comparator/{userId}/{userListPlaceIndex}/{userId2}/{userListPlaceIndex2}")
+    @RequestMapping(value = "/list_comparator/{userId}/{userListPlaceIndex}/{userId2}/{userListPlaceIndex2}",method = RequestMethod.GET)
     public HashMap<String, List<Place>> listComparator(@PathVariable String userId, @PathVariable int userListPlaceIndex,
                                                        @PathVariable String userId2, @PathVariable int userListPlaceIndex2) {
 
@@ -48,7 +48,7 @@ public class AdminController {
         return response;
     }
 
-    @RequestMapping("/place/{placeId}/interested")
+    @RequestMapping(value = "/place/{placeId}/interested",method = RequestMethod.GET)
     public HashMap<String, Integer> interestedUsers(@PathVariable int placeId) {
         HashMap<String, Integer> response = new HashMap<>();
         
