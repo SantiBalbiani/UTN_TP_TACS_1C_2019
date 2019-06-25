@@ -14,5 +14,6 @@ import findYourPlace.entity.User;
 public interface UserDao extends MongoRepository<User, String> {
 	
 	User findByUsername(String username);
+	void deleteUserByUsername(String username);
 
 }

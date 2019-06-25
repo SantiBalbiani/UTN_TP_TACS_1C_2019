@@ -61,7 +61,7 @@ public class PlaceServiceImpl implements PlaceService {
     public Place findById(String id) throws CouldNotRetrieveElementException{
         try {
             return placeDao.findById(id).get();
-        } catch(NoSuchElementException ex){
+        } catch(Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
@@ -73,17 +73,30 @@ public class PlaceServiceImpl implements PlaceService {
             placeBD.setVisited(place.getVisited());
             placeDao.save(placeBD);
             return placeBD;
-        } catch(NoSuchElementException ex){
+        } catch(Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
+
+    @Override
+    public Place updatePlaceListName(Place place,String placeListNewName) throws CouldNotRetrieveElementException{
+        try {
+            Place placeBD = placeDao.findByFortsquareIdAndUserIdAndListName(place.getFortsquareId(),place.getUserId(),place.getListName());
+            placeBD.setListName(placeListNewName);
+            placeDao.save(placeBD);
+            return placeBD;
+        } catch(Exception ex){
+            throw new CouldNotRetrieveElementException(ex.getMessage());
+        }
+    }
+
 
     @Override
     public void deleteByComposedIndex(String fortsquareId,String userId,String listName) throws CouldNotRetrieveElementException{
         try {
             Place place = placeDao.findByFortsquareIdAndUserIdAndListName(fortsquareId,userId,listName);
             placeDao.delete(place);
-        } catch (NoSuchElementException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
@@ -92,7 +105,7 @@ public class PlaceServiceImpl implements PlaceService {
     public Place save(Place place) throws CouldNotSaveElementException{
         try {
             return placeDao.save(place);
-        } catch (DuplicateKeyException ex){
+        } catch (Exception ex){
             throw new CouldNotSaveElementException(ex.getMessage());
         }
     }

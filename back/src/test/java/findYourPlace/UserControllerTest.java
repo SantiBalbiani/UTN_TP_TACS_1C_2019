@@ -75,20 +75,25 @@ public class UserControllerTest {
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
-        testGetUser(initialUsername,id);
-        testCreatePlaceList(id,listName);
-        testGetPlaceLists(id);
-        testGetPlaceListByName(id,listName);
-        testModifyPlaceList(id,listName,newListName);
-        testAddPlaceToUserPlace(id,newListName,placeId);
-        testGetPlaceFromUserPlaces(id,newListName,placeId);
-        testMarkPlaceAsVisited(id,newListName,placeId);
-        testDeletePlaceFromUserPlaces(id,newListName,placeId);
-        testDeletePlaceList(id,newListName);
+        String tokenUser = getTokenFromUsername(initialUsername);
+        testGetUser(initialUsername,id,tokenUser);
+        testCreatePlaceList(id,listName,tokenUser);
+        testGetPlaceLists(id,tokenUser);
+        testGetPlaceListByName(id,listName,tokenUser);
+        testModifyPlaceList(id,listName,newListName,tokenUser);
+        testAddPlaceToUserPlace(id,newListName,placeId,tokenUser);
+        testGetPlaceFromUserPlaces(id,newListName,placeId,tokenUser);
+        testMarkPlaceAsVisited(id,newListName,placeId,tokenUser);
+        testDeletePlaceFromUserPlaces(id,newListName,placeId,tokenUser);
+        testDeletePlaceList(id,newListName,tokenUser);
 
 
         //Delete created user
-        testDeleteUser(id);
+        testDeleteUser(id,tokenUser);
+    }
+
+    private String getTokenFromUsername(String initialUsername) {
+        return Jwts.builder().setIssuedAt(now).setSubject(initialUsername).claim("Rol", "user").setExpiration(new Date(expired)).signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
     }
 
     @Test
@@ -99,10 +104,11 @@ public class UserControllerTest {
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
+        String token = getTokenFromUsername(initialUsername);
         testAddPlaceToNonExistingUserPlace(id,"nonExistingListName","placeId");
 
         //Delete created user
-        testDeleteUser(id);
+        testDeleteUser(id,token);
     }
 
     @Test
@@ -113,11 +119,12 @@ public class UserControllerTest {
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
-        testCreatePlaceList(id,listName);
+        String token = getTokenFromUsername(initialUsername);
+        testCreatePlaceList(id,listName,token);
         testCreateDuplicatedPlaceList(id,listName);
 
         //Delete created user
-        testDeleteUser(id);
+        testDeleteUser(id,token);
     }
 
     @Test
@@ -128,11 +135,12 @@ public class UserControllerTest {
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
-        testCreatePlaceList(id,listName);
+        String token = getTokenFromUsername(initialUsername);
+        testCreatePlaceList(id,listName,token);
         testMarkNonExistingPlaceAsVisited(id,listName,"nonExistingPlaceId");
 
         //Delete created user
-        testDeleteUser(id);
+        testDeleteUser(id,token);
     }
 
     @Test
@@ -143,22 +151,23 @@ public class UserControllerTest {
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
-        testGetUser(initialUsername,id);
-        testCreatePlaceList(id,listName);
+        String token = getTokenFromUsername(initialUsername);
+        testGetUser(initialUsername,id,token);
+        testCreatePlaceList(id,listName,token);
         testModifyNonExistingPlaceList(id);
 
         //Delete created user
-        testDeleteUser(id);
+        testDeleteUser(id,token);
     }
 
     @Test
     @Order(7)
     public void testGetNotExistingUser() throws IOException, JSONException {
-        String url = getApiUrl()+"/"+"notExistingUserId";
+        String url = getApiUrl();//+"/"+"notExistingUserId";
         HttpUriRequest request = new HttpGet(url);
-        request.setHeader(HttpHeaders.AUTHORIZATION, token); 
+        request.setHeader(HttpHeaders.AUTHORIZATION, token+"sdsd");
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
-        Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,httpResponse.getStatusLine().getStatusCode());
     }
 
     @Test
@@ -168,14 +177,14 @@ public class UserControllerTest {
         HttpPost request = new HttpPost(url);
 
         request.setHeader("Content-Type", "application/json");
-        request.setHeader(HttpHeaders.AUTHORIZATION, token); 
+        request.setHeader(HttpHeaders.AUTHORIZATION, token+"ef");
         
         request.setEntity(new StringEntity("{\"name\":\"" + "list_name"+ "\"}",
                 ContentType.create("application/json")));
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
 
-        Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
+        Assert.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,httpResponse.getStatusLine().getStatusCode());
     }
 
     @Test
@@ -187,10 +196,11 @@ public class UserControllerTest {
 
         //Create user, get user, create list, get list, delete list
         String id = testCreateUser(initialUsername,"user");
+        String token = getTokenFromUsername(initialUsername);
         testCreateExistingUser(initialUsername,"user");
 
         //Delete created user
-        testDeleteUser(id);
+        testDeleteUser(id,token);
     }
 
     @Test
@@ -223,11 +233,11 @@ public class UserControllerTest {
     @Order(12)
     public void testDeleteinitialUser() throws IOException, JSONException {
 
-    	testDeleteUser(InitialUserId);
+    	testDeleteUser(InitialUserId,token);
     }
     
     public void testMarkNonExistingPlaceAsVisited(String userId, String placeListName, String placeId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
         HttpPatch request = new HttpPatch(url);
 
         request.setHeader("Content-Type", "application/json");
@@ -237,8 +247,8 @@ public class UserControllerTest {
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
 
-    public void testAddPlaceToUserPlace(String username, String placeListName, String placeId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+username+"/"+"place_list"+"/"+placeListName;
+    public void testAddPlaceToUserPlace(String id, String placeListName, String placeId,String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListName;
         HttpPut request = new HttpPut(url);
 
         request.setHeader("Content-Type", "application/json");
@@ -255,7 +265,7 @@ public class UserControllerTest {
     }
 
     public void testAddPlaceToNonExistingUserPlace(String username, String placeListName, String placeId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+username+"/"+"place_list"+"/"+placeListName;
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListName;
         HttpPut request = new HttpPut(url);
 
         request.setHeader("Content-Type", "application/json");
@@ -269,8 +279,8 @@ public class UserControllerTest {
 
     }
 
-    public void testDeletePlaceFromUserPlaces(String userId, String placeListName, String placeId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+    public void testDeletePlaceFromUserPlaces(String userId, String placeListName, String placeId,String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
         HttpDelete request = new HttpDelete(url);
 
         request.setHeader("Content-Type", "application/json");
@@ -284,8 +294,8 @@ public class UserControllerTest {
         Assert.assertEquals(placeListName,retrievedListName);
     }
 
-    public void testGetPlaceFromUserPlaces(String userId, String placeListName, String placeId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+    public void testGetPlaceFromUserPlaces(String userId, String placeListName, String placeId, String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
         HttpGet request = new HttpGet(url);
 
         request.setHeader("Content-Type", "application/json");
@@ -299,8 +309,8 @@ public class UserControllerTest {
         Assert.assertEquals(placeId,retrievedPlaceId);
     }
 
-    public void testMarkPlaceAsVisited(String userId, String placeListName, String placeId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
+    public void testMarkPlaceAsVisited(String userId, String placeListName, String placeId, String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListName+"/"+"place"+"/"+placeId;
         HttpPatch request = new HttpPatch(url);
 
         request.setHeader("Content-Type", "application/json");
@@ -350,8 +360,8 @@ public class UserControllerTest {
         Assert.assertEquals(HttpStatus.SC_CONFLICT,httpResponse.getStatusLine().getStatusCode());
     }
 
-    public void testCreatePlaceList(String userId,String listName) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list";
+    public void testCreatePlaceList(String userId,String listName,String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list";
         HttpPost request = new HttpPost(url);
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.AUTHORIZATION, token); 
@@ -369,7 +379,7 @@ public class UserControllerTest {
     }
 
     public void testCreateDuplicatedPlaceList(String userId,String listName) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list";
+        String url = getApiUrl()+"/"+"place_list";
         HttpPost request = new HttpPost(url);
         request.setHeader("Content-Type", "application/json");
         request.addHeader(HttpHeaders.AUTHORIZATION, token); 
@@ -381,8 +391,8 @@ public class UserControllerTest {
         Assert.assertEquals(HttpStatus.SC_CONFLICT,httpResponse.getStatusLine().getStatusCode());
     }
 
-    public void testGetPlaceListByName(String userId,String listName) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+listName;
+    public void testGetPlaceListByName(String userId,String listName,String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list"+"/"+listName;
         HttpGet request = new HttpGet(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
@@ -393,8 +403,8 @@ public class UserControllerTest {
         Assert.assertEquals(listName,retrievedListName);
     }
 
-    public void testGetPlaceLists(String userId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list";
+    public void testGetPlaceLists(String userId,String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list";
         HttpUriRequest request = new HttpGet(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
@@ -404,8 +414,8 @@ public class UserControllerTest {
         Assert.assertEquals(1,jsonArray.length());
     }
 
-    public void testGetUser(String initialUsername, String userId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId;
+    public void testGetUser(String initialUsername, String userId,String token) throws IOException, JSONException {
+        String url = getApiUrl();
         HttpUriRequest request = new HttpGet(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
@@ -430,8 +440,8 @@ public class UserControllerTest {
         Assert.assertEquals(HttpStatus.SC_NOT_FOUND,httpResponse.getStatusLine().getStatusCode());
     }
 
-    public void testModifyPlaceList(String userId,String placeListCurrentName, String placeListName) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListCurrentName+"/"+placeListName;
+    public void testModifyPlaceList(String userId,String placeListCurrentName, String placeListName,String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListCurrentName+"/"+placeListName;
         HttpPatch request = new HttpPatch(url);
         request.setHeader("Content-Type", "application/json");
 
@@ -448,8 +458,8 @@ public class UserControllerTest {
         Assert.assertEquals(placeListName,generatedListName);
     }
 
-    public void testDeletePlaceList(String userId,String placeListName) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId+"/"+"place_list"+"/"+placeListName;
+    public void testDeletePlaceList(String userId,String placeListName,String token) throws IOException, JSONException {
+        String url = getApiUrl()+"/"+"place_list"+"/"+placeListName;
         HttpDelete request = new HttpDelete(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
@@ -460,8 +470,8 @@ public class UserControllerTest {
         Assert.assertEquals(0,jsonArray.length());
     }
 
-    public void testDeleteUser(String userId) throws IOException, JSONException {
-        String url = getApiUrl()+"/"+userId;
+    public void testDeleteUser(String userId,String token) throws IOException, JSONException {
+        String url = getApiUrl();
         HttpDelete request = new HttpDelete(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);

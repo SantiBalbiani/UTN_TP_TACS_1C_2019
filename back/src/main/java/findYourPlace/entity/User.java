@@ -102,6 +102,9 @@ public class User implements UserDetails{
     public void modifyPlaceList(String placeListCurrentName,String placeListName) throws ElementDoesNotExistException {
         PlaceList placeList = findPlaceListByName(placeListCurrentName);
         placeList.setName(placeListName);
+        for(Place place : placeList.getPlaces()){
+            place.setListName(placeListName);
+        }
     }
 
     public void removePlaceList(String placeListName) throws ElementDoesNotExistException {

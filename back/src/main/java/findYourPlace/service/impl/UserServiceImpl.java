@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         try {
             user.setPassword(Encrypt.encrypt(user.getPassword()));
             return userDao.save(user);
-        } catch (DuplicateKeyException ex){
+        } catch (Exception ex){
             throw new CouldNotSaveElementException(ex.getMessage());
         }
     }
@@ -46,11 +46,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByUsername(String username) throws CouldNotRetrieveElementException {
-        try {
-            return userDao.findByUsername(username);
-        } catch (NoSuchElementException ex){
-            throw new CouldNotRetrieveElementException(ex.getMessage());
-        }
+        User user = userDao.findByUsername(username);
+        if (user == null)
+            throw new CouldNotRetrieveElementException("");
+        return user;
     }
 
 
@@ -60,90 +59,104 @@ public class UserServiceImpl implements UserService {
             User user = userDao.findById(userId).get();
             for(PlaceList placeList:user.getPlaceLists()){
                 for(Place place:placeList.getPlaces()){
-                    Place placeFS = fourSquareService.getPlaceById(place.getFortsquareId());
-                    place.setAddress(placeFS.getAddress());
-                    place.setCc(placeFS.getCc());
-                    place.setCity(placeFS.getCity());
-                    place.setCountry(placeFS.getCountry());
-                    place.setLatitude(placeFS.getLatitude());
-                    place.setLongitude(placeFS.getLongitude());
-                    place.setPostalCode(placeFS.getPostalCode());
-                    place.setState(placeFS.getState());
-                    place.setName(placeFS.getName());
                     place.setListName(placeList.getName());
                     place.setUserId(userId);
+                    try {
+                        Place placeFS = fourSquareService.getPlaceById(place.getFortsquareId());
+                        place.setAddress(placeFS.getAddress());
+                        place.setCc(placeFS.getCc());
+                        place.setCity(placeFS.getCity());
+                        place.setCountry(placeFS.getCountry());
+                        place.setLatitude(placeFS.getLatitude());
+                        place.setLongitude(placeFS.getLongitude());
+                        place.setPostalCode(placeFS.getPostalCode());
+                        place.setState(placeFS.getState());
+                        place.setName(placeFS.getName());
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
             return user;
-        } catch (NoSuchElementException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public void deleteUser(String userId) throws CouldNotRetrieveElementException {
+    public void deleteUser(String userName) throws CouldNotRetrieveElementException {
         try{
-            userDao.deleteById(userId);
-        } catch (NoSuchElementException ex){
+            userDao.deleteUserByUsername(userName);
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public List<PlaceList> getUserPlaces(String userId) throws CouldNotRetrieveElementException {
-        return getUser(userId).getPlaceLists();
+    public List<PlaceList> getUserPlaces(String username) throws CouldNotRetrieveElementException {
+        return getUserByUsername(username).getPlaceLists();
     }
 
     @Override
-    public User createUserPlaces(String userId, PlaceList placeList) throws CouldNotSaveElementException {
+    public User createUserPlaces(String username, PlaceList placeList) throws CouldNotSaveElementException {
         try {
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
             user.createPlaceList(placeList);
             userDao.save(user);
             return user;
-        } catch (ElementAlreadyExistsException ex){
+        } catch (Exception ex){
             throw new CouldNotSaveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public  PlaceList getUserPlacesByName(String userId, String placeListName) throws  CouldNotRetrieveElementException {
+    public  PlaceList getUserPlacesByName(String username, String placeListName) throws  CouldNotRetrieveElementException {
         try{
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
             return user.findPlaceListByName(placeListName);
-        } catch (ElementDoesNotExistException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public User deleteUserPlaces(String userId, String placeListName) throws CouldNotRetrieveElementException {
+    public User deleteUserPlaces(String username, String placeListName) throws CouldNotRetrieveElementException {
         try{
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
             user.removePlaceList(placeListName);
             userDao.save(user);
             return user;
-        } catch (ElementDoesNotExistException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public PlaceList modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotRetrieveElementException {
+    public PlaceList modifyUserPlaces(String username, String placeListCurrentName, String placeListNewName) throws CouldNotRetrieveElementException {
         try {
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
+            updatePlaces(user.getId(), placeListCurrentName, placeListNewName, user);
             user.modifyPlaceList(placeListCurrentName, placeListNewName);
             userDao.save(user);
             return user.findPlaceListByName(placeListNewName);
-        } catch (ElementDoesNotExistException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
+    private void updatePlaces(String userId, String placeListCurrentName, String placeListNewName, User user) {
+        PlaceList placeList = user.findPlaceListByName(placeListCurrentName);
+        for(Place place : placeList.getPlaces()){
+            place.setListName(placeListCurrentName);
+            place.setUserId(userId);
+            placeService.updatePlaceListName(place,placeListNewName);
+        }
+    }
+
     @Override
-    public PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotRetrieveElementException{
+    public PlaceList addPlaceToPlaceList(String username, String placeListName, Place place) throws CouldNotRetrieveElementException{
         try {
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
 
             //save place as subordinated object in user/placeList
             user.addPlaceToPlaceList(placeListName, place);
@@ -190,41 +203,49 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Place getPlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException {
+    public Place getPlaceFromPlaceList(String username, String placeListName, String placeId) throws CouldNotRetrieveElementException {
         try {
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
             return user.getPlaceFromPlaceList(placeListName, placeId);
-        } catch (ElementDoesNotExistException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public PlaceList deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException {
+    public PlaceList deletePlaceFromPlaceList(String username, String placeListName, String placeId) throws CouldNotRetrieveElementException {
         try {
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
             user.deletePlaceFromPlaceList(placeListName, placeId);
             userDao.save(user);
-            placeService.deleteByComposedIndex(placeId,userId,placeListName);
+            placeService.deleteByComposedIndex(placeId,user.getId(),placeListName);
             return user.findPlaceListByName(placeListName);
-        } catch (ElementDoesNotExistException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
     }
 
     @Override
-    public Place markPlaceAsVisited(String userId, String placeListName, String placeId)
+    public Place markPlaceAsVisited(String username, String placeListName, String placeId)
             throws CouldNotRetrieveElementException {
         try {
-            User user = getUser(userId);
+            User user = getUserByUsername(username);
             Place place = user.getPlaceFromPlaceList(placeListName, placeId);
             place.setVisited(true);
             userDao.save(user);
-            placeService.updatePlace(place);
+            updatePlace(user.getId(), placeListName, place);
             return place;
-        } catch (ElementDoesNotExistException ex){
+        } catch (Exception ex){
             throw new CouldNotRetrieveElementException(ex.getMessage());
         }
+    }
+
+    private void updatePlace(String userId, String placeListName, Place place) {
+        Place placeInPlaceCollection = new Place(place.getFortsquareId());
+        placeInPlaceCollection.setUserId(userId);
+        placeInPlaceCollection.setListName(placeListName);
+        placeInPlaceCollection.setVisited(place.getVisited());
+        placeService.updatePlace(placeInPlaceCollection);
     }
 
     @Override

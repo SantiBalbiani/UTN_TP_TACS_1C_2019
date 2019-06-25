@@ -12,31 +12,31 @@ public interface UserService {
 
     User createUser(User user) throws CouldNotSaveElementException;
 
-    void deleteUser(String userId) throws CouldNotRetrieveElementException;
+    void deleteUser(String userName) throws CouldNotRetrieveElementException;
 
     User getUser(String userId) throws CouldNotRetrieveElementException;
 
     User getUserByUsername(String username) throws CouldNotRetrieveElementException;
 
-    List<PlaceList> getUserPlaces(String userId) throws CouldNotRetrieveElementException;
+    List<PlaceList> getUserPlaces(String username) throws CouldNotRetrieveElementException;
 
-    User createUserPlaces(String userId, PlaceList placeList) throws  CouldNotSaveElementException;
+    User createUserPlaces(String username, PlaceList placeList) throws  CouldNotSaveElementException;
 
-    PlaceList getUserPlacesByName(String userId, String placeListName) throws  CouldNotRetrieveElementException;
+    PlaceList getUserPlacesByName(String username, String placeListName) throws  CouldNotRetrieveElementException;
 
-    User deleteUserPlaces(String userId, String placeListName) throws CouldNotRetrieveElementException;
+    User deleteUserPlaces(String username, String placeListName) throws CouldNotRetrieveElementException;
 
-    PlaceList modifyUserPlaces(String userId, String placeListCurrentName, String placeListNewName) throws CouldNotRetrieveElementException;
+    PlaceList modifyUserPlaces(String username, String placeListCurrentName, String placeListNewName) throws CouldNotRetrieveElementException;
 
-    PlaceList addPlaceToPlaceList(String userId, String placeListName, Place place) throws CouldNotRetrieveElementException;
+    PlaceList addPlaceToPlaceList(String username, String placeListName, Place place) throws CouldNotRetrieveElementException;
 
     PlaceList addPlaceToPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException;
 
-    Place getPlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException ;
+    Place getPlaceFromPlaceList(String username, String placeListName, String placeId) throws CouldNotRetrieveElementException ;
 
-    PlaceList deletePlaceFromPlaceList(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException;
+    PlaceList deletePlaceFromPlaceList(String username, String placeListName, String placeId) throws CouldNotRetrieveElementException;
 
-    Place markPlaceAsVisited(String userId, String placeListName, String placeId) throws CouldNotRetrieveElementException;
+    Place markPlaceAsVisited(String username, String placeListName, String placeId) throws CouldNotRetrieveElementException;
 
 	List<User> getUsers() throws CouldNotRetrieveElementException;
 

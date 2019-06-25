@@ -45,7 +45,7 @@ public class TokenServiceImpl implements TokenService {
 				.setSigningKey(Constants.SUPER_SECRET_KEY)
 				.parseClaimsJws(token);
 				
-        return (String) claims.getBody().get("Rol");
+        return (String) claims.getBody().get("sub");
         
     }
     

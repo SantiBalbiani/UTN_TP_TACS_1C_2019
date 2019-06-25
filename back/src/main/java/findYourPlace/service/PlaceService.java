@@ -10,6 +10,7 @@ public interface PlaceService {
     AdminResponse getPlacesRegisteredAtDaysAgo(Integer daysAgo) throws CouldNotRetrieveElementException ;
     Place findById(String id) throws CouldNotRetrieveElementException;
     Place updatePlace(Place place) throws CouldNotRetrieveElementException;
+    Place updatePlaceListName(Place place,String placeListNewName) throws CouldNotRetrieveElementException;
     void deleteByComposedIndex(String fortsquareId,String userId,String listName) throws CouldNotRetrieveElementException;
     Place save(Place place) throws CouldNotSaveElementException;
     AdminResponse getPlaces() throws CouldNotRetrieveElementException;
