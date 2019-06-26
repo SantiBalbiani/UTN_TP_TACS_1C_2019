@@ -12,5 +12,6 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 
 .idea/
+.vscode
 back/findurplace_back.iml
 back/src/main/resources/application.properties
