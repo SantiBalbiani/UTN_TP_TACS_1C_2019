@@ -6,9 +6,13 @@ import findYourPlace.entity.User;
 import findYourPlace.service.FourSquareService;
 import findYourPlace.service.UserService;
 import findYourPlace.service.impl.exception.CouldNotRetrieveElementException;
+import findYourPlace.service.impl.exception.CouldNotSaveElementException;
+import findYourPlace.utils.Encrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -52,6 +56,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             } else if (s.startsWith("/buscar")) {
                 message.setText(search(parameters, chatId));
 
+            } else if (s.startsWith("/crear_lista")) {
+                message.setText(createList(parameters, chatId));
+
             } else if (s.startsWith("/agregar_lugar")) {
                 message.setText(addPlaceToList(parameters, chatId));
 
@@ -72,16 +79,21 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private String authenticate(String[] parameters, long chatId) {
-        if (parameters.length < 1) {
-            return "Por favor ingrese: {username}";
+        if (parameters.length < 2) {
+            return "Por favor ingrese: {username} {contraseña}";
         }
 
         String username = parameters[1];
+        String password = parameters[2];
 
         try {
             System.out.println("user " + username);
             System.out.println("service " + userService);
             User user = userService.getUserByUsername(username);
+
+            if (!Encrypt.checkPsw(password, user.getPassword())) {
+                return "Contraseña inválida";
+            }
 
             chats.put(chatId, username);
 
@@ -100,15 +112,35 @@ public class TelegramBot extends TelegramLongPollingBot {
         List<Place> places = fourSquareService.searchPlaces(description);
 
 
-        String responseText = "```";
+        String responseText = "";
 
-        for (Place place: places) {
+        for (Place place : places) {
             responseText += place.toString() + "\n";
         }
 
-        responseText += "```";
-
         return responseText;
+    }
+
+    private String createList(String[] parameters, long chatId) {
+        if (parameters.length < 1) {
+            return "Por favor ingrese: {nombreLista}";
+        }
+
+        if (!isAutenticated(chatId)) {
+            return "Por favor autentíquese";
+        }
+
+        User user = getChatUser(chatId);
+        String placeListName = parameters[1];
+        PlaceList placeList = new PlaceList(placeListName);
+
+        try {
+            userService.createUserPlaces(user.getUsername(), placeList);
+
+            return "Lista creada con éxito";
+        } catch (CouldNotSaveElementException e) {
+            return "Lista no encontrada";
+        }
     }
 
     private String placesList(String[] parameters, long chatId) {
@@ -116,16 +148,29 @@ public class TelegramBot extends TelegramLongPollingBot {
             return "Por favor ingrese: {nombreLista}";
         }
 
-        if(!isAutenticated(chatId)) {
+        if (!isAutenticated(chatId)) {
             return "Por favor autentíquese";
         }
 
-        String idUser = getChatUser(chatId).getId();
+        User user = getChatUser(chatId);
         String placeListName = parameters[1];
 
-        PlaceList placeList = userService.getUserPlacesByName(idUser, placeListName);
+        try {
+            PlaceList placeList = userService.getUserPlacesByName(user.getUsername(), placeListName);
 
-        return placeList.toString();
+            if(placeList.getPlaces().size() == 0) {
+                return "Lista vacia";
+            }
+
+            String description = "";
+            for (Place place: placeList.getPlaces()) {
+                description += fourSquareService.getPlaceById(place.getFortsquareId()).toString() + "\n";
+            }
+
+            return description;
+        } catch (CouldNotRetrieveElementException e) {
+            return "Lista no encontrada";
+        }
     }
 
     private String addPlaceToList(String[] parameters, long chatId) {
@@ -133,7 +178,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             return "Por favor ingrese: {nombreLista} {idLugar}";
         }
 
-        if(!isAutenticated(chatId)) {
+        if (!isAutenticated(chatId)) {
             return "Por favor autentíquese";
         }
 
@@ -141,16 +186,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         String placeListName = parameters[1];
         String idLugar = parameters[2];
 
-        userService.addPlaceToPlaceList(idUser, placeListName, idLugar);
+        try {
+            userService.addPlaceToPlaceList(idUser, placeListName, idLugar);
 
-        return "Lugar agregado con éxito";
+            return "Lugar agregado con éxito";
+        } catch (CouldNotRetrieveElementException e) {
+            return "Lista no encontrada";
+        }
     }
 
     private String displayHelp(long chatId) {
 
         String authenticated;
 
-        if(isAutenticated(chatId)) {
+        if (isAutenticated(chatId)) {
             User user = getChatUser(chatId);
             authenticated = "Conectado con " + user.getUsername();
         } else {
@@ -159,8 +208,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         return "Autenticado: " + authenticated + "\n\n" +
                 "Lista de comandos disponibles:\n" +
-                "/autenticar {username}: Autenticarse con usuario\n" +
+                "/autenticar {username} {contraseña}: Autenticarse con usuario\n" +
                 "/buscar {descripción}: Búsqueda de lugares por descripción\n" +
+                "/crear_lista {nombreLista} {idLugar}: Crear lista de lugares de usuario (requiere estar autenticado)\n" +
                 "/agregar_lugar {nombreLista} {idLugar}: Agregar lugar a lista de usuario (requiere estar autenticado)\n" +
                 "/lugares_lista {nombreLista}: Obtener lugares de lista de usuario (requiere estar autenticado)";
     }

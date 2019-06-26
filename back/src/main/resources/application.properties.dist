@@ -1,7 +1,7 @@
-foursquare.client-id=EDEGFNK514HEKEOU3EGVJWCJZU15TVBQUT34KWAWGVAFLCJW
-foursquare.client-secret=HKFKHYZQ2EE3MF4Z1I4SINY0GYMRUKCBGJCNSX1QH0HOVRKM
-telegram.username=tptacs_bot
-telegram.token=898507625:AAEY6Ihm89CIlCgrznSvut5R-10jQugcj1w
+foursquare.client-id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+foursquare.client-secret=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+telegram.username=XXXXXXXXX
+telegram.token=XXXXX:XXXXXXXXXXXXXXXXXXXXXXXXX
 
 #Local MongoDB config
 spring.data.mongodb.authentication-database=admin

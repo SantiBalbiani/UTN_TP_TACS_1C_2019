@@ -52,7 +52,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-
     @Override
     public User getUser(String userId) throws CouldNotRetrieveElementException {
         try {

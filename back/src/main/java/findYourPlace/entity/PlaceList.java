@@ -76,6 +76,10 @@ public class PlaceList {
 
     @Override
     public String toString() {
+        if(this.places.size() == 0) {
+            return "Lista vacia";
+        }
+
         String description = "";
         for (Place place: this.places) {
             description += place.toString() + "\n";
