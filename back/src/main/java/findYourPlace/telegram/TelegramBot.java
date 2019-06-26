@@ -210,7 +210,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 "Lista de comandos disponibles:\n" +
                 "/autenticar {username} {contraseña}: Autenticarse con usuario\n" +
                 "/buscar {descripción}: Búsqueda de lugares por descripción\n" +
-                "/crear_lista {nombreLista} {idLugar}: Crear lista de lugares de usuario (requiere estar autenticado)\n" +
+                "/crear_lista {nombreLista}: Crear lista de lugares de usuario (requiere estar autenticado)\n" +
                 "/agregar_lugar {nombreLista} {idLugar}: Agregar lugar a lista de usuario (requiere estar autenticado)\n" +
                 "/lugares_lista {nombreLista}: Obtener lugares de lista de usuario (requiere estar autenticado)";
     }
