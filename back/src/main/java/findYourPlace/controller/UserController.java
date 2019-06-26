@@ -43,9 +43,9 @@ public class UserController {
 
     //Agregar una nueva lista de lugares al usuario
     @RequestMapping(value = "/place_list",method = RequestMethod.POST)
-    public ResponseEntity createPlaceList(@RequestHeader(value = "Authorization") String request, @RequestBody PlaceList placeList) {
+    public ResponseEntity createPlaceList(@RequestHeader(value = "Authorization") String request, @RequestBody String listName) {
         String username = tokenService.getUsername(request);
-        return new ResponseEntity(userService.createUserPlaces(username, placeList), HttpStatus.OK);
+        return new ResponseEntity(userService.createUserPlaces(username, listName), HttpStatus.OK);
     }
 
     //Visualizar lista de listas de lugares del usuario
@@ -66,7 +66,7 @@ public class UserController {
     @RequestMapping(value = "/place_list/{placeListName}",method = RequestMethod.GET)
     public ResponseEntity getPlaceListByName(@RequestHeader(value = "Authorization") String request, @PathVariable String placeListName) {
         String username = tokenService.getUsername(request);
-        return new ResponseEntity(userService.getUserPlacesByName(username, placeListName), HttpStatus.OK);
+        return new ResponseEntity<PlaceList>(userService.getUserPlacesByName(username, placeListName), HttpStatus.OK);
     }
 
     //Cambiar nombre de lista lugares del usuario

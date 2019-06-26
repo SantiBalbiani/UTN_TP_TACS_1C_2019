@@ -20,7 +20,7 @@ public interface UserService {
 
     List<PlaceList> getUserPlaces(String username) throws CouldNotRetrieveElementException;
 
-    User createUserPlaces(String username, PlaceList placeList) throws  CouldNotSaveElementException;
+    User createUserPlaces(String username, String listName) throws  CouldNotSaveElementException;
 
     PlaceList getUserPlacesByName(String username, String placeListName) throws  CouldNotRetrieveElementException;
 
