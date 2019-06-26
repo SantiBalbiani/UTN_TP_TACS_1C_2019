@@ -97,10 +97,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUserPlaces(String username, PlaceList placeList) throws CouldNotSaveElementException {
+    public User createUserPlaces(String username, String listName) throws CouldNotSaveElementException {
         try {
             User user = getUserByUsername(username);
-            user.createPlaceList(placeList);
+            user.createPlaceList(listName);
             userDao.save(user);
             return user;
         } catch (Exception ex){

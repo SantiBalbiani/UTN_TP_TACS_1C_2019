@@ -94,9 +94,9 @@ public class User implements UserDetails{
         }
     }
 
-    public void createPlaceList(PlaceList placeList) throws ElementAlreadyExistsException {
-        validatePlaceListName(placeList.getName());
-        this.placeLists.add(placeList);
+    public void createPlaceList(String listName) throws ElementAlreadyExistsException {
+        validatePlaceListName(listName);
+        this.placeLists.add(new PlaceList(listName));
     }
 
     public void modifyPlaceList(String placeListCurrentName,String placeListName) throws ElementDoesNotExistException {

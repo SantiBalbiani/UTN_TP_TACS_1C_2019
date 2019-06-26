@@ -14,15 +14,16 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
-
+import org.junit.runners.MethodSorters;
 import findYourPlace.security.Constants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 
 import java.io.IOException;
 import java.util.Date;
@@ -32,45 +33,46 @@ import java.util.Date;
  */
 
 @SpringBootTest
-
+@Scope("prototype")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AdminControllerTest {
 
     private String serverPort="8080";
-    private String serverAddress = "http://springboot";
+    private String serverAddress = "http://localhost";
     private String getApiUrl() {
         return serverAddress + ":" + serverPort + "/admin";
     }
 
     //Se crea token para pruebas
     
-    static long nowMillis = System.currentTimeMillis();
-    static Date now = new Date(nowMillis);
-    static long expired = nowMillis + 999999;
+    static final long nowMillis = System.currentTimeMillis();
+    static final Date now = new Date(nowMillis);
+    static final long expired = nowMillis + 999999;
     
     static final String initialUsername = "pepe" + RandomStringUtils.random(12, true, false).toLowerCase();
+    
+    static final Date expirationDate = new Date(expired);
     
     static final String  token = Jwts.builder().setIssuedAt(now)
     		.setSubject(initialUsername)
     		.claim("Rol", "admin")
-			.setExpiration(new Date(expired))
+			.setExpiration(expirationDate)
 			.signWith(SignatureAlgorithm.HS512, Constants.SUPER_SECRET_KEY).compact();
     
-    String InitialUserId;
-    
+    static String InitialUserId;
+
     @Test
-    @Order(1)  
-    public void testCreateInitialUser() throws IOException, JSONException {
+    public void testACreateInitialUser() throws IOException, JSONException {
 
         //Create user, get user, create list, get list, delete list
-    	InitialUserId = testCreateUser(initialUsername, "admin");
-
+    	AdminControllerTest.InitialUserId = testCreateUser(initialUsername, "admin");
+    	System.out.println("this.InitialUserId1" + AdminControllerTest.InitialUserId);
     }
     
     @Test
-    @Order(2)
-    public void testInterestedUsers() throws IOException, JSONException {
+    public void testBInterestedUsers() throws IOException, JSONException {
         int placeId = 1;
-
+        System.out.println("this.InitialUserId2" + AdminControllerTest.InitialUserId);
         String url = getApiUrl() +"/"+ "place/" + placeId + "/interested";
         
         HttpUriRequest request = new HttpGet(url);
@@ -88,8 +90,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(3)
-    public void testTotalRegisteredPlaces() throws  IOException, JSONException {
+    public void testCTotalRegisteredPlaces() throws  IOException, JSONException {
     	String url = getApiUrl() +"/"+ "place/dashboard";
         
         HttpUriRequest request = new HttpGet(url);
@@ -107,14 +108,13 @@ public class AdminControllerTest {
     }
     
     @Test
-    @Order(4)
-    public void testDeleteinitialUser() throws IOException, JSONException {
+    public void testDDeleteinitialUser() throws IOException, JSONException {
 
-    	testDeleteUser(InitialUserId);
+    	testDeleteUser();
     }
     
-    public void testDeleteUser(String userId) throws IOException, JSONException {
-    	String url = serverAddress + ":" + 8080 +"/"+ "user" +"/"+ userId;
+    public void testDeleteUser() throws IOException, JSONException {
+    	String url = serverAddress + ":" + 8080 +"/"+ "user";
         HttpDelete request = new HttpDelete(url);
         request.addHeader(HttpHeaders.AUTHORIZATION, token);
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
