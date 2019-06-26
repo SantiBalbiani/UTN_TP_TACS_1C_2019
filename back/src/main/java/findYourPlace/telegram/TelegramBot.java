@@ -132,10 +132,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         User user = getChatUser(chatId);
         String placeListName = parameters[1];
-        PlaceList placeList = new PlaceList(placeListName);
 
         try {
-            userService.createUserPlaces(user.getUsername(), placeList);
+            userService.createUserPlaces(user.getUsername(), placeListName);
 
             return "Lista creada con éxito";
         } catch (CouldNotSaveElementException e) {
