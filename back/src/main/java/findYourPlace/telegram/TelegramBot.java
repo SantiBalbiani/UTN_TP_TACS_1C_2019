@@ -138,7 +138,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             return "Lista creada con éxito";
         } catch (CouldNotSaveElementException e) {
-            return "Lista no encontrada";
+            return "Nombre de lista ya existente";
         }
     }
 
